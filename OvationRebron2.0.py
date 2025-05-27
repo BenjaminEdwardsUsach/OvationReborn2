@@ -11,7 +11,7 @@ import os  # Para manejo de archivos y carpetas
 
 #%% FUNCIONES DE UTILIDAD
 
-def moving_average(a, n=2):
+def moving_average(a, n=2): #prioridad 5
     """
     Calcula el promedio móvil de un arreglo 'a' con una ventana de tamaño 'n'.
 
@@ -112,7 +112,7 @@ def compute_energy_edges(energies): #prioridad 3 (revisar y optimizar)
                            (energies[:-1] + energies[1:]) / 2,
                            [energies[-1] + (energies[-1] - energies[-2]) / 2]))
 
-def calcular_min_tolerable(segment_flux, factor=0.1): # prioridad 5
+def calcular_min_tolerable(segment_flux, factor=0.1): # prioridad 8
     """
     Calcula un umbral mínimo tolerable a partir de un segmento de flujo.
     Se estima el background como el percentil 85 y el pico como el percentil 90,
