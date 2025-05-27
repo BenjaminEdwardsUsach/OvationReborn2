@@ -40,7 +40,7 @@ Para obtener los archivos CDF desde CDAWeb (usado en el script):
 2. Seleccionar satélite e instrumento (p. ej., SSJ4 de DMSP).  
 3. Elegir ventana temporal y variable deseada.  
 4. En “Select an activity” elegir **Download CDF** y pulsar **Submit**.  
-5. Descargar el archivo CDF desde el enlace en la nueva página :contentReference[oaicite:6]{index=6}:contentReference[oaicite:7]{index=7}.
+5. Descargar el archivo CDF desde el enlace en la nueva página https://cdaweb.gsfc.nasa.gov/index.html.
 
 ---
 
