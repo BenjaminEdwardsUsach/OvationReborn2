@@ -26,7 +26,7 @@ def moving_average(a, n=2):
     ret[n:] = ret[n:] - ret[:-n]
     return ret[n - 1:] / n
 
-def detectar_b2i_sliding_vec(flux, window_avg=2, lookahead=10, sliding_window=3, min_flux=10.5):
+def detectar_b2i_sliding_vec(flux, window_avg=2, lookahead=10, sliding_window=3, min_flux=10.5): # Prioridad 1 (revisar, arrelgar y optimizar)
     """
     Detecta el índice candidato para el límite b2i en una serie de flujos integrados,
     considerando únicamente los índices para los cuales hay suficientes datos hacia adelante.
@@ -48,7 +48,7 @@ def detectar_b2i_sliding_vec(flux, window_avg=2, lookahead=10, sliding_window=3,
     best_candidate = valid_candidates[np.argmax(diff[valid_candidates])]
     return best_candidate
 
-def load_variable(cdf, varname):
+def load_variable(cdf, varname): # Prioridad 4 (optimizar y mejorar)
     """
     Carga una variable del archivo CDF aplicando filtros de VALIDMIN y VALIDMAX (si están presentes).
     """
@@ -60,7 +60,7 @@ def load_variable(cdf, varname):
         return np.where((raw >= valid_min) & (raw <= valid_max), raw, np.nan)
     return raw
 
-def convert_to_serializable(obj):
+def convert_to_serializable(obj): #prioridad 6
     """
     Convierte objetos a tipos serializables en JSON.
     """
@@ -74,7 +74,7 @@ def convert_to_serializable(obj):
         return int(obj)
     raise TypeError(f"Object of type {obj.__class__.__name__} is not JSON serializable")
 
-def clean_local_outliers(data, threshold=3):
+def clean_local_outliers(data, threshold=3): # Prioridad 7
     """
     Reemplaza en 'data' los valores que se desvían más de 'threshold' veces la mediana absoluta 
     de la desviación (MAD) por la mediana del conjunto.
@@ -87,7 +87,7 @@ def clean_local_outliers(data, threshold=3):
     cleaned_data = np.where(np.abs(data - median_val) > threshold * mad, median_val, data)
     return cleaned_data
 
-def compute_time_edges(time_array):
+def compute_time_edges(time_array): #prioridad 2 (revisar y optimizar)
     """
     Dado un array de tiempos (convertido a números usando mdates.date2num),
     calcula los bordes de tiempo para pcolormesh.
@@ -101,7 +101,7 @@ def compute_time_edges(time_array):
     else:
         return np.array([time_num[0] - 0.005, time_num[0] + 0.005])
 
-def compute_energy_edges(energies):
+def compute_energy_edges(energies): #prioridad 3 (revisar y optimizar)
     """
     Calcula los bordes de energía a partir del array de energías.
     Se asume que 'energies' es un array de valores ordenados.
@@ -112,7 +112,7 @@ def compute_energy_edges(energies):
                            (energies[:-1] + energies[1:]) / 2,
                            [energies[-1] + (energies[-1] - energies[-2]) / 2]))
 
-def calcular_min_tolerable(segment_flux, factor=0.1):
+def calcular_min_tolerable(segment_flux, factor=0.1): # prioridad 5
     """
     Calcula un umbral mínimo tolerable a partir de un segmento de flujo.
     Se estima el background como el percentil 85 y el pico como el percentil 90,
