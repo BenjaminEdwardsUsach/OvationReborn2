@@ -249,7 +249,7 @@ if not os.path.exists(main_folder):
     os.makedirs(main_folder)
 
 #%% BUCLE SOBRE SEGMENTOS VÁLIDOS PARA DETECTAR B2I Y GRAFICAR CICLOS
-info_pasadas = []
+info_pasadas = [] # Ultima prioridad, debido a la complejidad del ciclo
 contador = 0
 for par in pares_extremos:
 
