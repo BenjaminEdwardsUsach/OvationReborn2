@@ -1,4 +1,4 @@
-#%% IMPORTS Y CONFIGURACIÓN INICIAL
+# IMPORTS Y CONFIGURACIÓN INICIAL
 import cdflib
 import numpy as np
 import matplotlib.pyplot as plt
@@ -9,7 +9,7 @@ import os  # Para manejo de archivos y carpetas
 
 # Comentario: guardar todos los datos de b2i, coordenadas, tiempo y los gráficos en un archivo JSON con nombre automático y encontrar b2e
 
-#%% FUNCIONES DE UTILIDAD
+# FUNCIONES DE UTILIDAD
 
 def moving_average(a, n=2): #prioridad 5
     """
@@ -92,14 +92,20 @@ def compute_time_edges(time_array): #prioridad 2 (revisar y optimizar)
     Dado un array de tiempos (convertido a números usando mdates.date2num),
     calcula los bordes de tiempo para pcolormesh.
     """
-    time_num = mdates.date2num(time_array)
-    if len(time_num) > 1:
-        dt = np.diff(time_num)
-        return np.concatenate(([time_num[0] - dt[0]/2],
-                               (time_num[:-1] + time_num[1:]) / 2,
-                               [time_num[-1] + dt[-1]/2]))
-    else:
+    time_num = mdates.date2num(time_array) # Transforma una fecha a un valor númerico
+
+    if not time_num.size: # Evita que de error porque 'time_num' sea de tamaño 0
+        return np.array([])
+    
+    time_num_length = len(time_num)
+    if time_num_length == 1: # Si su tamaño es 1, crea un intervalo pequeño arbitrario para que se pueda hacer una representación gráfica de éste
         return np.array([time_num[0] - 0.005, time_num[0] + 0.005])
+
+    edges = np.empty(time_num_length + 1, dtype=time_num.dtype) # Función inicial optimizada sin metodos innecesarios que consuman recursos
+    edges[1:-1] = (time_num[:-1] + time_num[1:]) / 2.0
+    edges[0] = time_num[0] - (edges[1] - time_num[0])
+    edges[time_num_length] = time_num[time_num_length-1] + (time_num[time_num_length-1] - edges[time_num_length-1])
+    return edges
 
 def compute_energy_edges(energies): #prioridad 3 (revisar y optimizar)
     """
@@ -126,7 +132,7 @@ def calcular_min_tolerable(segment_flux, factor=0.1): # prioridad 8
     print(f"Background: {background:.3f}, Peak: {peak:.3f}, Threshold: {umbral:.3f}")
     return umbral
 
-#%% CARGA DE DATOS DEL ARCHIVO CDF
+# CARGA DE DATOS DEL ARCHIVO CDF
 cdf_file = 'dmsp-f16_ssjs_precipitating-electrons-ions_20141231000000_20141231235959_cdaweb.cdf'
 archivo = cdflib.CDF(cdf_file)
 info = archivo.cdf_info()
@@ -144,7 +150,7 @@ ION_TOTAL_ENERGY_FLUX = load_variable(archivo, 'ION_TOTAL_ENERGY_FLUX')
 SC_AACGM_LAT          = load_variable(archivo, 'SC_AACGM_LAT')
 SC_GEOCENTRIC_LAT     = load_variable(archivo, 'SC_GEOCENTRIC_LAT')
 
-#%% FILTRADO DE CANALES (30 eV a 30000 eV)
+# FILTRADO DE CANALES (30 eV a 30000 eV)
 mask_chan = (CHANNEL_ENERGIES >= 30) & (CHANNEL_ENERGIES <= 30000)
 CHANNEL_ENERGIES = CHANNEL_ENERGIES[mask_chan]
 ELE_DIFF_ENERGY_FLUX = ELE_DIFF_ENERGY_FLUX[:, mask_chan]
@@ -162,14 +168,14 @@ delta = np.insert(delta, 0, Left)
 delta = np.append(delta, Right)
 delta = np.array(delta)
 
-#%% INTEGRACIÓN DEL FLUJO DIFERENCIAL
+# INTEGRACIÓN DEL FLUJO DIFERENCIAL
 flujos_iones = []
 for elem in ION_DIFF_ENERGY_FLUX:
     flux_value = np.sum(elem[canal1:canal2] * delta[canal1:canal2])
     flujos_iones.append(flux_value)
 flujos_iones = np.array(flujos_iones)
 
-#%% FILTRADO POR OUTLIERS
+# FILTRADO POR OUTLIERS
 indices_diff = np.where(~np.isnan(flujos_iones))[0] 
 tiempo_final_filtrado = [tiempo_final[i] for i in indices_diff]
 flujos_iones_filtrado = flujos_iones[indices_diff]
@@ -183,7 +189,7 @@ indices_total = np.where(~np.isnan(ION_TOTAL_ENERGY_FLUX))[0]
 tiempo_total_filtrado = [tiempo_final[i] for i in indices_total]
 ion_total_filtrado = ION_TOTAL_ENERGY_FLUX[indices_total]
 
-#%% SEPARACIÓN SEGÚN LATITUD (SC_AACGM_LAT)
+# SEPARACIÓN SEGÚN LATITUD (SC_AACGM_LAT)
 adjust_SC_AACGM_LAT = []
 other_SC_AACGM_LAT  = []
 adjust_tiempo_final = []
@@ -205,7 +211,7 @@ for i, elem in enumerate(SC_AACGM_LAT):
         other_SC_AACGM_LAT.append(elem)
         other_tiempo_final.append(tiempo_final[i])
 
-#%% DETECCIÓN DE EXTREMOS EN LATITUD (CAMBIO DE SIGNO)
+# DETECCIÓN DE EXTREMOS EN LATITUD (CAMBIO DE SIGNO)
 extremos = []
 extremos.append((adjust_tiempo_final[0], adjust_SC_AACGM_LAT[0]))
 for i in range(len(adjust_SC_AACGM_LAT) - 1):
@@ -215,10 +221,10 @@ for i in range(len(adjust_SC_AACGM_LAT) - 1):
         extremos.append((adjust_tiempo_final[i + 1], adjust_SC_AACGM_LAT[i + 1]))
 extremos.append((adjust_tiempo_final[-1], adjust_SC_AACGM_LAT[-1]))
 
-#%% AGRUPACIÓN DE EXTREMOS EN PARES (SEGMENTOS DE INTERÉS)
+# AGRUPACIÓN DE EXTREMOS EN PARES (SEGMENTOS DE INTERÉS)
 pares_extremos = [extremos[i:i + 2] for i in range(0, len(extremos), 2)]
 
-#%% SELECCIÓN DE SEGMENTOS VÁLIDOS
+# SELECCIÓN DE SEGMENTOS VÁLIDOS
 tol = 1  # Tolerancia en segundos
 valid_data = []
 others = []
@@ -248,7 +254,7 @@ main_folder = cdf_basename
 if not os.path.exists(main_folder):
     os.makedirs(main_folder)
 
-#%% BUCLE SOBRE SEGMENTOS VÁLIDOS PARA DETECTAR B2I Y GRAFICAR CICLOS
+# BUCLE SOBRE SEGMENTOS VÁLIDOS PARA DETECTAR B2I Y GRAFICAR CICLOS
 info_pasadas = [] # Ultima prioridad, debido a la complejidad del ciclo
 contador = 0
 for par in pares_extremos:
