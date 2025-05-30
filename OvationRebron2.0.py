@@ -87,7 +87,7 @@ def clean_local_outliers(data, threshold=3): # Prioridad 7
     cleaned_data = np.where(np.abs(data - median_val) > threshold * mad, median_val, data)
     return cleaned_data
 
-def compute_time_edges(time_array): #prioridad 2 (revisar y optimizar)
+def compute_time_edges(time_array, dt=0.005): #prioridad 2 (revisar y optimizar)
     """
     Dado un array de tiempos (convertido a números usando mdates.date2num),
     calcula los bordes de tiempo para pcolormesh.
@@ -99,7 +99,7 @@ def compute_time_edges(time_array): #prioridad 2 (revisar y optimizar)
     
     time_num_length = len(time_num)
     if time_num_length == 1: # Si su tamaño es 1, crea un intervalo pequeño arbitrario para que se pueda hacer una representación gráfica de éste
-        return np.array([time_num[0] - 0.005, time_num[0] + 0.005])
+        return np.array([time_num[0] - dt, time_num[0] + dt])
 
     edges = np.empty(time_num_length + 1, dtype=time_num.dtype) # Función inicial optimizada sin metodos innecesarios que consuman recursos
     edges[1:-1] = (time_num[:-1] + time_num[1:]) / 2.0
