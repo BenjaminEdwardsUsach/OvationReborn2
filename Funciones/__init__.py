@@ -29,3 +29,9 @@ from .calcular_min_tolerable import calcular_min_tolerable
 
 # — Función principal que genera los ciclos (gráficas, JSON, etc.) —
 from .procesar_ciclos import procesar_ciclos
+
+from .segment_utils import split_cycle_segment
+from .candidate_utils import detect_b2i_candidate
+from .io_utils import save_cycle_info
+from .plot_utils import plot_cycle
+from .procesar_ciclos import procesar_ciclos
