@@ -72,16 +72,6 @@ def main(cdf_file):
     # 7. Agrupar los extremos en pares (inicio, fin) para cada ciclo
     pares_extremos = ov.agrupar_extremos(extremos)
 
-    # 8. Seleccionar segmentos válidos para procesamiento,
-    #    según tolerancia y número mínimo de puntos
-    valid_data, otros_data = ov.seleccionar_segmentos_validos(
-        pares_extremos,
-        adjust_SC_AACGM_LAT,
-        adjust_tiempo_final,
-        comparador,
-        tol=1
-    )
-
     # 9. Crear carpeta principal basada en el nombre del archivo CDF
     main_folder = ov.crear_carpetas(cdf_file)
     print(f"Carpeta principal creada: {main_folder}")
