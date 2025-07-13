@@ -3,7 +3,7 @@ import pytest
 import os
 import json
 import numpy as np
-from unittest.mock import patch, MagicMock
+from unittest.mock import patch, MagicMock, mock_open
 import datetime
 
 # Import the functions to be tested
