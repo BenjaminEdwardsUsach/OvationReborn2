@@ -74,33 +74,16 @@ Para instalar y ejecutar el programa;
    - Intervalos sin datos: recibirás una advertencia si no hay registros en el rango, revisa tu tiempo.
    
    - Formato de tiempo: cualquier variación en segundos cambia el filtrado de datos.
-
-   Salida organizada por ciclo
-
-   Retrocompatibilidad
-   
-   Sin parámetros explí­citos, el comportamiento es idéntico a versiones anteriores (todas las fronteras y todo el archivo).
    
    Salida organizada por ciclo
-   
-   csharp
-   Copiar
-   Editar
-   [CDF_FILENAME]/
-     ├─ cycle_1/
-     │   ├─ info.json      # parámetros y valores de fronteras
-     │   ├─ cycle.png      # gráfico del ciclo
-     │   └─ fluxes.csv     # flujos integrados (si está habilitado)
-     ├─ cycle_2/ …
-     └─ resumen_global.json
-   5. Notas Importantes
-   Minúsculas: los nombres de fronteras son sensibles a mayúsculas/minúsculas.
-   
-   Dependencias internas: no es necesario indicar fronteras dependientes manualmente.
-   
-   Intervalos sin datos: recibirás una advertencia si no hay registros en el rango, revisa tu tiempo.
-   
-   Formato de tiempo: cualquier variación en segundos cambia el filtrado de datos.
+
+[CDF_FILENAME]/
+├─ cycle_1/
+│   ├─ info.json      # parámetros y valores de fronteras
+│   ├─ cycle.png      # gráfico del ciclo
+│   └─ fluxes.csv     # flujos integrados (si está habilitado)
+├─ cycle_2/ …
+└─ resumen_global.json
    
 ## Requisitos
 
