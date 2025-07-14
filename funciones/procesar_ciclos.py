@@ -4,10 +4,10 @@ from .io_utils import save_cycle_info
 from .plot_utils import plot_cycle
 from .boundary_detection import detect_all_boundaries
 
-def procesar_ciclos(pares_extremos, tiempo_final, tiempo_final_dict,
-                    sc_lat, sc_geo,
-                    flujos_iones, flujos_elec,ele_total_energy, ele_diff_flux,ele_avg_energy, ion_diff_filtrado,
-                    channel_energies, energy_edges, main_folder):
+def procesar_ciclos(pares_extremos, tiempo_final, tiempo_final_dict, sc_lat, sc_geo,
+                    flujos_iones, flujos_elec, ele_total_energy, ele_diff_flux,
+                    ele_avg_energy, ion_diff_filtrado, channel_energies, energy_edges, 
+                    main_folder, fronteras=None):
     """
     Procesamiento completo de ciclos con todas las fronteras
     """
@@ -53,8 +53,8 @@ def procesar_ciclos(pares_extremos, tiempo_final, tiempo_final_dict,
         }
         
         # 3) Detectar todas las fronteras
-        boundaries_seg1 = detect_all_boundaries(seg1_data, channel_energies)
-        boundaries_seg2 = detect_all_boundaries(seg2_data, channel_energies)
+        boundaries_seg1 = detect_all_boundaries(seg1_data, channel_energies,fronteras=fronteras)
+        boundaries_seg2 = detect_all_boundaries(seg2_data, channel_energies, fronteras=fronteras)
         
         # 4) Guardar información
         info = {
