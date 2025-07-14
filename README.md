@@ -6,7 +6,7 @@
 
 ## Descripción
 
-OvationReborn2 reproduce el esquema cuantitativo de identificación de límites de precipitación nocturna (b₁ₑ/b₁ᵢ, b₂ₑ, b₂ᵢ, b₃ₐ/b₃ᵦ, b₄ₛ, b₅, b₆) descrito en *Morphology of nightside precipitation* :contentReference[oaicite:0]{index=0}. El proyecto:
+OvationReborn2 reproduce el esquema cuantitativo de identificación de límites de precipitación nocturna (b₁ₑ/b₁ᵢ, b₂ₑ, b₂ᵢ, b₃ₐ/b₃ᵦ, b₄ₛ, b₅, b₆) descrito en *Morphology of nightside precipitation*. El proyecto:
 
 - Carga datos CDF de DMSP (32 eV–30 keV, resolución 1 s).  
 - Aplica filtros, limpieza de outliers y cálculo de flujos integrados.  
@@ -53,7 +53,7 @@ Para instalar y ejecutar el programa;
    cd OvationReborn2
 2. instalamos dependencias;
    pip install -r requirements.txt
-3. Ejecutar el sprint con los parámetros deseados, Ej;
+3. Ejecutar starter.py con los parámetros deseados, Ej;
    python starter.py archivo.cdf --fronteras b1e b2e b6 --inicio 2014-12-31T12:00:00 --fin 2014-12-31T12:30:00
 
    Posteriormente, ingresar la ruta del archivo CDF.
