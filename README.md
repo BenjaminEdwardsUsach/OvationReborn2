@@ -46,7 +46,43 @@ Para obtener los archivos CDF desde CDAWeb (usado en el script):
 
 ## Manual de Usuario
 
+Para instalar y ejecutar el programa;
 
+1. Clonamos el repositorio;
+   git clone https://github.com/BenjaminEdwardsUsach/OvationReborn2.git
+   cd OvationReborn2
+2. instalamos dependencias;
+   pip install -r requirements.txt
+3. Ejecutar el sprint con los parámetros deseados, Ej;
+   python starter.py archivo.cdf --fronteras b1e b2e b6 --inicio 2014-12-31T12:00:00 --fin 2014-12-31T12:30:00
+
+   Posteriormente, ingresar la ruta del archivo CDF.
+
+   ruta/al/archivo.cdf: ruta absoluta o relativa al archivo CDF de DMSP.
+   
+   --fronteras: lista de fronteras a detectar (minúsculas). Opciones:
+   b1e, b2e, b2i, b3a, b3b, b4s, b5e, b5i, b6
+   Usa all para todas (valor por defecto).
+
+   --inicio y --fin: intervalo temporal en formato ISO YYYY-MM-DDThh:mm:ss (inclusive).
+
+ 4. Notas Importantes
+   - Minúsculas: los nombres de fronteras son sensibles a mayúsculas/minúsculas.
+   
+   - Dependencias internas: no es necesario indicar fronteras dependientes manualmente.
+   
+   - Intervalos sin datos: recibirás una advertencia si no hay registros en el rango, revisa tu tiempo.
+   
+   - Formato de tiempo: cualquier variación en segundos cambia el filtrado de datos.
+
+Salida;
+[CDF_FILENAME]/
+  ├─ cycle_1/
+  │   ├─ info.json      # parámetros y valores de fronteras
+  │   ├─ cycle.png      # gráfico del ciclo
+  │   └─ fluxes.csv     # flujos integrados (si está habilitado)
+  ├─ cycle_2/ …
+  └─ resumen_global.json
 --
 
 ## Requisitos
