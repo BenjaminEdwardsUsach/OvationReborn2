@@ -75,15 +75,15 @@ Para instalar y ejecutar el programa;
    
    - Formato de tiempo: cualquier variación en segundos cambia el filtrado de datos.
 
-Salida;
-[CDF_FILENAME]/
-  ├─ cycle_1/
-  │   ├─ info.json      # parámetros y valores de fronteras
-  │   ├─ cycle.png      # gráfico del ciclo
-  │   └─ fluxes.csv     # flujos integrados (si está habilitado)
-  ├─ cycle_2/ …
-  └─ resumen_global.json
---
+   Salida organizada por ciclo
+
+   [CDF_FILENAME]/
+     ├─ cycle_1/
+     │   ├─ info.json      # parámetros y valores de fronteras
+     │   ├─ cycle.png      # gráfico del ciclo
+     │   └─ fluxes.csv     # flujos integrados (si está habilitado)
+     ├─ cycle_2/ …
+     └─ resumen_global.json
 
 ## Requisitos
 
