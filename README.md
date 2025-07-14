@@ -77,6 +77,10 @@ Para instalar y ejecutar el programa;
 
    Salida organizada por ciclo
 
+   Retrocompatibilidad
+   
+   Sin parámetros explí­citos, el comportamiento es idéntico a versiones anteriores (todas las fronteras y todo el archivo).
+   
    Salida organizada por ciclo
    
    csharp
@@ -89,6 +93,15 @@ Para instalar y ejecutar el programa;
      │   └─ fluxes.csv     # flujos integrados (si está habilitado)
      ├─ cycle_2/ …
      └─ resumen_global.json
+   5. Notas Importantes
+   Minúsculas: los nombres de fronteras son sensibles a mayúsculas/minúsculas.
+   
+   Dependencias internas: no es necesario indicar fronteras dependientes manualmente.
+   
+   Intervalos sin datos: recibirás una advertencia si no hay registros en el rango, revisa tu tiempo.
+   
+   Formato de tiempo: cualquier variación en segundos cambia el filtrado de datos.
+   
 ## Requisitos
 
 - **Python** 3.8+  
