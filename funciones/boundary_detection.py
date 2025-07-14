@@ -373,9 +373,10 @@ def detect_b6(segment, b5e_idx, min_flux_e=10.4, min_flux_i=9.6,
         
     return None, None, None, {'min_flux_e': min_flux_e, 'min_flux_i': min_flux_i}, deviation
 
-def detect_all_boundaries(segment, energy_channels):
+def detect_all_boundaries(segment, energy_channels, fronteras=None):
     """
-    Detecta todas las fronteras en orden con dependencias adecuadas
+    Detecta las fronteras especificadas en orden con dependencias adecuadas
+    Si fronteras es None, detecta todas
     """
     # Convertir todas las listas a arrays NumPy para operaciones vectorizadas
     segment = {
@@ -388,65 +389,101 @@ def detect_all_boundaries(segment, energy_channels):
         'ele_avg_energy': np.asarray(segment['ele_avg_energy'])
     }
     
+    # Lista de todas las fronteras posibles
+    todas_fronteras = ['b1e', 'b2e', 'b2i', 'b3a', 'b3b', 'b4s', 'b5e', 'b5i', 'b6']
+    
+    # Si no se especifican fronteras, usar todas
+    if fronteras is None:
+        fronteras = todas_fronteras
+    
     results = {}
     
     # B1e - Límite de convección de energía cero
-    b1e_idx, b1e_time, b1e_lat, b1e_params, b1e_dev = detect_b1e(segment, energy_channels)
-    results['b1e'] = {
-        'index': b1e_idx, 'time': b1e_time, 'lat': b1e_lat,
-        'params': b1e_params, 'deviation': b1e_dev
-    }
+    if 'b1e' in fronteras:
+        b1e_idx, b1e_time, b1e_lat, b1e_params, b1e_dev = detect_b1e(segment, energy_channels)
+        results['b1e'] = {
+            'index': b1e_idx, 'time': b1e_time, 'lat': b1e_lat,
+            'params': b1e_params, 'deviation': b1e_dev
+        }
+    else:
+        results['b1e'] = {'index': None, 'time': None, 'lat': None}
     
-    # B2e - Inicio de la lámina de plasma
-    b2e_idx, b2e_time, b2e_lat, b2e_params, b2e_dev = detect_b2e(segment, b1e_idx)
-    results['b2e'] = {
-        'index': b2e_idx, 'time': b2e_time, 'lat': b2e_lat,
-        'params': b2e_params, 'deviation': b2e_dev
-    }
+    # B2e - Inicio de la lámina de plasma (depende de b1e)
+    if 'b2e' in fronteras:
+        b1e_idx_val = results['b1e']['index'] if 'b1e' in results else None
+        b2e_idx, b2e_time, b2e_lat, b2e_params, b2e_dev = detect_b2e(segment, b1e_idx_val)
+        results['b2e'] = {
+            'index': b2e_idx, 'time': b2e_time, 'lat': b2e_lat,
+            'params': b2e_params, 'deviation': b2e_dev
+        }
+    else:
+        results['b2e'] = {'index': None, 'time': None, 'lat': None}
     
     # B2i - Frontera de isotropía de iones
-    b2i_idx, b2i_time, b2i_lat, b2i_params, b2i_dev = detect_b2i(segment, energy_channels)
-    results['b2i'] = {
-        'index': b2i_idx, 'time': b2i_time, 'lat': b2i_lat,
-        'params': b2i_params, 'deviation': b2i_dev
-    }
+    if 'b2i' in fronteras:
+        b2i_idx, b2i_time, b2i_lat, b2i_params, b2i_dev = detect_b2i(segment, energy_channels)
+        results['b2i'] = {
+            'index': b2i_idx, 'time': b2i_time, 'lat': b2i_lat,
+            'params': b2i_params, 'deviation': b2i_dev
+        }
+    else:
+        results['b2i'] = {'index': None, 'time': None, 'lat': None}
+
     
-    # B3a/B3b - Eventos de aceleración de electrones
-    b3a_idx, b3a_time, b3a_lat, b3b_idx, b3b_time, b3b_lat, b3_params, b3_dev = detect_b3(segment, energy_channels)
-    results['b3a'] = {
-        'index': b3a_idx, 'time': b3a_time, 'lat': b3a_lat,
-        'params': b3_params, 'deviation': b3_dev
-    }
-    results['b3b'] = {
-        'index': b3b_idx, 'time': b3b_time, 'lat': b3b_lat,
-        'params': b3_params, 'deviation': b3_dev
-    }
+    # B3a/B3b - Pico de aceleración de electrones
+    if 'b3a' in fronteras or 'b3b' in fronteras:
+        b3a_idx, b3a_time, b3a_lat, b3b_idx, b3b_time, b3b_lat, b3_params, b3_dev = detect_b3(segment, energy_channels)
+        results['b3a'] = {
+            'index': b3a_idx, 'time': b3a_time, 'lat': b3a_lat,
+            'params': {'min_peak_ratio': b3_params['min_peak_ratio'], 'min_drop_ratio': b3_params['min_drop_ratio']},
+            'deviation': b3_dev
+        }
+        results['b3b'] = {
+            'index': b3b_idx, 'time': b3b_time, 'lat': b3b_lat,
+            'params': {'min_peak_ratio': b3_params['min_peak_ratio'], 'min_drop_ratio': b3_params['min_drop_ratio']},
+            'deviation': b3_dev
+        }
+
+    else:
+        results['b3a'] = {'index': None, 'time': None, 'lat': None}
+        results['b3b'] = {'index': None, 'time': None, 'lat': None}
+
+    # B4s - Límite de llovizna subvisual (depende de b2e y b2i)
+    if 'b4s' in fronteras:
+        b2e_idx_val = results['b2e']['index'] if 'b2e' in results else None
+        b2i_idx_val = results['b2i']['index'] if 'b2i' in results else None
+        b4s_idx, b4s_time, b4s_lat, b4s_params, b4s_dev = detect_b4s(segment, b2e_idx_val, b2i_idx_val)
+        results['b4s'] = {
+            'index': b4s_idx, 'time': b4s_time, 'lat': b4s_lat,
+            'params': {'min_corr': b4s_params['min_corr']},
+            'deviation': b4s_dev
+        }
+    else:
+        results['b4s'] = {'index': None, 'time': None, 'lat': None}
+
+    # B5e - Límite de llovizna visual (depende de b4s)
+    if 'b5e' in fronteras:
+        b4s_idx_val = results['b4s']['index'] if 'b4s' in results else None
+        b5e_idx, b5e_time, b5e_lat, b5e_params, b5e_dev = detect_b5(segment, particle_type='electron')
+        results['b5e'] = {
+            'index': b5e_idx, 'time': b5e_time, 'lat': b5e_lat,
+            'params': {'drop_factor': b5e_params['drop_factor']},
+            'deviation': b5e_dev
+        }
+    else:
+        results['b5e'] = {'index': None, 'time': None, 'lat': None}
     
-    # B4s - Transición estructurada/no estructurada
-    b4s_idx, b4s_time, b4s_lat, b4s_params, b4s_dev = detect_b4s(segment, b2e_idx, b2i_idx)
-    results['b4s'] = {
-        'index': b4s_idx, 'time': b4s_time, 'lat': b4s_lat,
-        'params': b4s_params, 'deviation': b4s_dev
-    }
+    # B6 - Límite de llovizna subvisual (depende de b5e)
+    if 'b6' in fronteras:
+        b5e_idx_val = results['b5e']['index'] if 'b5e' in results else None
+        b6_idx, b6_time, b6_lat, b6_params, b6_dev = detect_b6(segment, b5e_idx_val)
+        results['b6'] = {
+            'index': b6_idx, 'time': b6_time, 'lat': b6_lat,
+            'params': b6_params, 'deviation': b6_dev
+        }
+    else:
+        results['b6'] = {'index': None, 'time': None, 'lat': None}
     
-    # B5e/B5i - Borde polar del óvalo auroral
-    b5e_idx, b5e_time, b5e_lat, b5e_params, b5e_dev = detect_b5(segment, 'electron')
-    results['b5e'] = {
-        'index': b5e_idx, 'time': b5e_time, 'lat': b5e_lat,
-        'params': b5e_params, 'deviation': b5e_dev
-    }
-    
-    b5i_idx, b5i_time, b5i_lat, b5i_params, b5i_dev = detect_b5(segment, 'ion')
-    results['b5i'] = {
-        'index': b5i_idx, 'time': b5i_time, 'lat': b5i_lat,
-        'params': b5i_params, 'deviation': b5i_dev
-    }
-    
-    # B6 - Límite de llovizna subvisual
-    b6_idx, b6_time, b6_lat, b6_params, b6_dev = detect_b6(segment, b5e_idx)
-    results['b6'] = {
-        'index': b6_idx, 'time': b6_time, 'lat': b6_lat,
-        'params': b6_params, 'deviation': b6_dev
-    }
+    return results
     
     return results
