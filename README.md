@@ -78,12 +78,12 @@ Para instalar y ejecutar el programa;
    Salida organizada por ciclo
 
 [CDF_FILENAME]/
-├─ cycle_1/
-│   ├─ info.json      # parámetros y valores de fronteras
-│   ├─ cycle.png      # gráfico del ciclo
-│   └─ fluxes.csv     # flujos integrados (si está habilitado)
-├─ cycle_2/ …
-└─ resumen_global.json
+   ├─ cycle_1/
+   │   ├─ info.json      # parámetros y valores de fronteras
+   │   ├─ cycle.png      # gráfico del ciclo
+   │   └─ fluxes.csv     # flujos integrados (si está habilitado)
+   ├─ cycle_2/ …
+   └─ resumen_global.json
    
 ## Requisitos
 
