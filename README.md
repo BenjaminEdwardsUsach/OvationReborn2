@@ -18,9 +18,9 @@ OvationReborn2 reproduce el esquema cuantitativo de identificación de límites 
 
 ## Estructura del Código
 
-Basado en `nuevo1.py`:
+Basado en `OvationReborn23.py`:
 
-- **`moving_average`, `detectar_b2i_sliding_vec`**: funciones para promedio móvil y detección de b₂ᵢ con ventana deslizante :contentReference[oaicite:2]{index=2}:contentReference[oaicite:3]{index=3}.  
+- **`moving_average`, `detectar_b2i_sliding_vec`**: funciones para promedio móvil y detección de b₂ᵢ con ventana deslizante.  
 - Carga CDF y extracción de variables con filtros `VALIDMIN`/`VALIDMAX`.  
 - Filtrado de canales entre 30 eV y 30 keV, cálculo de `flujos_iones`.  
 - Limpieza de outliers con mediana y MAD.  
