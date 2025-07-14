@@ -3,7 +3,6 @@ numpy
 scipy
 pandas
 matplotlib
-os
 warnings
 sys
 argparse
