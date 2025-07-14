@@ -44,6 +44,11 @@ Para obtener los archivos CDF desde CDAWeb (usado en el script):
 
 ---
 
+## Manual de Usuario
+
+
+--
+
 ## Requisitos
 
 - **Python** 3.8+  
