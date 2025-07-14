@@ -10,7 +10,7 @@ OvationReborn2 reproduce el esquema cuantitativo de identificación de límites 
 
 - Carga datos CDF de DMSP (32 eV–30 keV, resolución 1 s).  
 - Aplica filtros, limpieza de outliers y cálculo de flujos integrados.  
-- Detecta automáticamente los límites operacionales definidos en Newell et al. (1996) mediante técnicas de promedio móvil y correlación de espectros :contentReference[oaicite:1]{index=1}.  
+- Detecta automáticamente los límites operacionales definidos en Newell et al. (1996) mediante técnicas de promedio móvil y correlación de espectros.  
 - Produce gráficos espectrales (pcolormesh con escala log) y series de flujo integrado con marcas de candidatos b₂ᵢ.  
 - Guarda resultados en JSON y figuras PNG por ciclo.
 
