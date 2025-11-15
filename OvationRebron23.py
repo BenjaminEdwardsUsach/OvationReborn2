@@ -12,7 +12,7 @@ def main(cdf_file, fronteras=None, inicio=None, fin=None):
     # 1. Cargar datos
     datos = ov.cargar_datos_cdf(cdf_file)
     tiempo_final = datos["tiempo_final"]
-    ele_total_energy = datos["ELE_TOTAL_ENERGY_FLUX"]
+    ele_total_energy = datos["ELE_TOTAL_ENERGY_FLUX"]  # ✅ MANTENER para filtrado posterior
     CHANNEL_ENERGIES = datos["CHANNEL_ENERGIES"]
     tiempo_final_dict = {t: i for i, t in enumerate(tiempo_final)}
     
@@ -34,6 +34,9 @@ def main(cdf_file, fronteras=None, inicio=None, fin=None):
         datos['ION_DIFF_ENERGY_FLUX'] = datos['ION_DIFF_ENERGY_FLUX'][mascara_tiempo]
         datos['ELE_TOTAL_ENERGY_FLUX'] = datos['ELE_TOTAL_ENERGY_FLUX'][mascara_tiempo]
         datos['ELE_AVG_ENERGY'] = datos['ELE_AVG_ENERGY'][mascara_tiempo] if 'ELE_AVG_ENERGY' in datos else None
+        
+        # ✅ CORRECCIÓN CRÍTICA: Filtrar ele_total_energy también
+        ele_total_energy = datos['ELE_TOTAL_ENERGY_FLUX']
         
         # Actualizar diccionario de tiempo
         tiempo_final_dict = {t: i for i, t in enumerate(tiempo_final)}
@@ -60,25 +63,49 @@ def main(cdf_file, fronteras=None, inicio=None, fin=None):
         low=30,
         high=30000
     )
+
+    print(f"Canales filtrados: {len(CHANNEL_ENERGIES_f)} canales entre {CHANNEL_ENERGIES_f[0]} y {CHANNEL_ENERGIES_f[-1]} eV")
     
-    # 5. Integrar flujo de iones
-    flujos_iones = ov.integrar_flujo_diferencial(
+
+    # 5. Integrar flujos con rangos CORRECTOS para orden descendente
+    print("🎯 Integrando flujos con rangos CORRECTOS para orden descendente:")
+
+    # Para b2i: iones 3-30 keV (canales 0-6 en orden descendente)
+    flujos_iones_b2i = ov.integrar_flujo_diferencial(
         ION_DIFF_ENERGY_FLUX_f,
         delta,
-        canal1=0,
-        canal2=6
+        canal1=0,   # 30000 eV (más energético)
+        canal2=7     # 3000 eV (límite inferior de 3 keV)
     )
-    
-    # Integrar flujo de electrones
+
+    # Para electrones: rango completo o específico
     flujos_elec = ov.integrar_flujo_diferencial(
         ELE_DIFF_ENERGY_FLUX_f,
         delta,
-        canal1=0,
-        canal2=6
+        canal1=0,   # 30000 eV
+        canal2=19    # 30 eV (todo el rango)
     )
 
+    # Para otras fronteras que necesiten flujo total de iones
+    flujos_iones = ov.integrar_flujo_diferencial(
+        ION_DIFF_ENERGY_FLUX_f,
+        delta, 
+        canal1=0,
+        canal2=19    # 30 eV (todo el rango)
+    )
+
+    # ¡CONVERTIR A ESCALA LOGARÍTMICA! (como espera el paper)
+    print("📊 Convirtiendo flujos a escala logarítmica...")
+    flujos_iones_log = np.log10(flujos_iones + 1e-10)  # +1e-10 para evitar log(0)
+    flujos_elec_log = np.log10(flujos_elec + 1e-10)
+    flujos_iones_b2i_log = np.log10(flujos_iones_b2i + 1e-10)
+
+    print(f"✅ Flujos integrados - Iones: {flujos_iones_log.shape}, Electrones: {flujos_elec_log.shape}")
+    print(f"   Rangos log - Iones: [{np.min(flujos_iones_log):.2f}, {np.max(flujos_iones_log):.2f}]")
+    print(f"   Rangos log - Electrones: [{np.min(flujos_elec_log):.2f}, {np.max(flujos_elec_log):.2f}]")
+
     # 6. Separar por latitud
-    adjust_SC_AACGM_LAT, adjust_tiempo_final, other_SC_AACGM_LAT, other_tiempo_final, comparador = ov.separar_por_latitud(
+    adjust_SC_AACGM_LAT, adjust_tiempo_final, other_SC_AACGM_LAT, other_tiempo_final, transitions = ov.separar_por_latitud(
         datos['SC_AACGM_LAT'],
         tiempo_final
     )
@@ -95,27 +122,54 @@ def main(cdf_file, fronteras=None, inicio=None, fin=None):
     # 9. Crear carpeta principal
     main_folder = ov.crear_carpetas(cdf_file)
     
-    # 10. Calcular bordes de energía
-    energy_edges = ov.compute_energy_edges(CHANNEL_ENERGIES)
-    
-    # 11. Procesar ciclos con las fronteras seleccionadas
-    ov.procesar_ciclos(
-        pares_extremos,
-        tiempo_final,
-        tiempo_final_dict,
-        datos['SC_AACGM_LAT'],
-        datos['SC_GEOCENTRIC_LAT'],
-        flujos_iones,
-        flujos_elec,
-        ele_total_energy,
-        ELE_DIFF_ENERGY_FLUX_f,
-        datos['ELE_AVG_ENERGY'],
-        ION_DIFF_ENERGY_FLUX_f,
-        CHANNEL_ENERGIES_f,
-        energy_edges,
-        main_folder,
-        fronteras=fronteras  # Pasar lista de fronteras a procesar
-    )
+    # ✅ CORRECCIÓN CRÍTICA: Calcular energy_edges con CHANNEL_ENERGIES_f (filtrado)
+    energy_edges = ov.compute_energy_edges(CHANNEL_ENERGIES_f)
+
+    # En OvationRebron23.py, ANTES de llamar procesar_ciclos:
+    print("🔍 VERIFICACIÓN FINAL DE FLUJOS:")
+    print(f"   flujos_iones_log: shape={flujos_iones_log.shape}, " +
+        f"NaN={np.sum(np.isnan(flujos_iones_log))}, " +
+        f"rango=[{np.nanmin(flujos_iones_log):.2f}, {np.nanmax(flujos_iones_log):.2f}]")
+    print(f"   flujos_elec_log: shape={flujos_elec_log.shape}, " +
+        f"NaN={np.sum(np.isnan(flujos_elec_log))}, " +
+        f"rango=[{np.nanmin(flujos_elec_log):.2f}, {np.nanmax(flujos_elec_log):.2f}]")
+    print(f"   flujos_iones_b2i_log: shape={flujos_iones_b2i_log.shape}, " +
+        f"NaN={np.sum(np.isnan(flujos_iones_b2i_log))}, " +
+        f"rango=[{np.nanmin(flujos_iones_b2i_log):.2f}, {np.nanmax(flujos_iones_b2i_log):.2f}]")
+
+    # Verificar consistencia de dimensiones
+    if len(tiempo_final) != len(flujos_iones_log):
+        print(f"❌ ERROR CRÍTICO: Tiempo ({len(tiempo_final)}) y flujos iones ({len(flujos_iones_log)}) no coinciden")
+    if len(tiempo_final) != len(flujos_elec_log):
+        print(f"❌ ERROR CRÍTICO: Tiempo ({len(tiempo_final)}) y flujos elec ({len(flujos_elec_log)}) no coinciden")
+    if len(tiempo_final) != len(flujos_iones_b2i_log):
+        print(f"❌ ERROR CRÍTICO: Tiempo ({len(tiempo_final)}) y flujos b2i ({len(flujos_iones_b2i_log)}) no coinciden")
+
+    # Llamar a procesar_ciclos solo si las verificaciones pasan
+    if (len(tiempo_final) == len(flujos_iones_log) == 
+        len(flujos_elec_log) == len(flujos_iones_b2i_log)):
+
+        ov.procesar_ciclos(
+            pares_extremos,
+            tiempo_final,
+            tiempo_final_dict,
+            datos['SC_AACGM_LAT'],
+            datos['SC_GEOCENTRIC_LAT'],
+            flujos_iones_log,           # Flujo total iones (log)
+            flujos_elec_log,            # Flujo total electrones (log)
+            flujos_iones_b2i_log,       # Flujo b2i específico
+            ele_total_energy,
+            ELE_DIFF_ENERGY_FLUX_f,
+            datos['ELE_AVG_ENERGY'],
+            ION_DIFF_ENERGY_FLUX_f,
+            CHANNEL_ENERGIES_f,
+            energy_edges,
+            main_folder,
+            fronteras=fronteras
+        )
+                
+    else:
+        print("❌ ERROR: No se puede procesar ciclos debido a inconsistencias en dimensiones")
 
 if __name__ == "__main__":
     # Configurar parser de argumentos

@@ -1,45 +1,86 @@
-# b1i.py
 import numpy as np
+from scipy.ndimage import uniform_filter1d
+from .funciones_auxiliares.thresholds import PAPER_THRESHOLDS
 
-def detect_b1i(segment_data, channel_energies):
+def validate_segment_data(segment, required_keys):
+    """Valida que el segmento tenga los datos necesarios"""
+    for key in required_keys:
+        if key not in segment:
+            return False, f"Falta clave: {key}"
+        if segment[key] is None or len(segment[key]) == 0:
+            return False, f"Datos vacíos: {key}"
+    
+    # Verificar consistencia de longitudes
+    base_length = len(segment['time'])
+    for key in required_keys:
+        if len(segment[key]) != base_length:
+            return False, f"Longitud inconsistente: {key}"
+    
+    return True, "OK"
+
+def detect_b1i(segment, energy_channels):
     """
-    Detecta la frontera b1i (límite de convección de energía cero para iones)
-    
-    Args:
-        segment_data (dict): Diccionario con datos del segmento
-        channel_energies (array): Energías de los canales
-    
-    Returns:
-        int: Índice de la frontera b1i o None si no se detecta
+    Boundary 1i (zero-energy ion boundary) - VERSIÓN CORREGIDA
     """
-    # Obtener datos relevantes
-    ion_diff_flux = segment_data['ion_diff_flux']
+    thresholds = PAPER_THRESHOLDS['b1i']
     
-    # Determinar canales de baja energía (32-47 eV)
-    low_e_mask = (channel_energies >= 32) & (channel_energies <= 47)
+    # Validar datos del segmento
+    required_keys = ['ion_diff_flux', 'time', 'lat']
+    valid, msg = validate_segment_data(segment, required_keys)
+    if not valid:
+        print(f"   ⚠️ b1i: {msg}")
+        return {'index': None, 'time': None, 'lat': None, 'deviation': 0}
     
-    # Calcular flujo parcial de iones en el rango de baja energía
-    jip_partial = np.sum(ion_diff_flux[:, low_e_mask], axis=1)
-    jip_log = np.log10(jip_partial)
+    # 1. Determinar canales de energía usando umbrales del paper
+    low_mask = (energy_channels >= thresholds.get('low_energy_min', 32)) & (energy_channels <= thresholds.get('low_energy_max', 47))
     
-    # Buscar el salto en el flujo (factor de 2)
-    n = len(jip_log)
-    for i in range(3, n-3):
-        prev_avg = np.mean(jip_log[i-3:i])
-        next_avg = np.mean(jip_log[i+1:i+4])
+    # Verificar spacecraft charging (cutoff en canal de 32 eV)
+    high_mask = energy_channels > thresholds.get('high_energy_thresh', 68)
+    if np.any(high_mask):
+        high_flux = np.mean(segment['ion_diff_flux'][:, high_mask], axis=1)
+        charging_mask = (high_flux < 0.1 * np.sum(segment['ion_diff_flux'][:, low_mask], axis=1)) & (segment['lat'] < 60)
+        if np.any(charging_mask):
+            # Usar canales 47-68 eV
+            clean_mask = (energy_channels > thresholds.get('clean_energy_min', 47)) & (energy_channels < thresholds.get('clean_energy_max', 68))
+            if np.any(clean_mask):
+                low_mask = clean_mask
+    
+    # 2. Calcular flujo parcial
+    partial_flux = np.sum(segment['ion_diff_flux'][:, low_mask], axis=1)
+    log_flux = np.log10(partial_flux + 1e-10)
+    
+    n = len(log_flux)
+    if n < thresholds['background_window'] + 6:
+        return {'index': None, 'time': None, 'lat': None, 'deviation': 0}
+    
+    # 3. Calcular fondo
+    background = np.mean(log_flux[:thresholds['background_window']])
+    
+    # 4. Algoritmo principal
+    for i in range(3, n - 3):
+        prev_avg = np.mean(log_flux[i-3:i])
+        next_avg = np.mean(log_flux[i+1:i+4])
         
-        # Convertir a espacio lineal para calcular el factor
-        linear_jump = 10**next_avg / 10**prev_avg
+        if prev_avg <= 0:
+            continue
+            
+        jump_ratio = next_avg / prev_avg
         
-        # Verificar condiciones
-        if linear_jump > 2.0 or (jip_log[i] > 6.5 and linear_jump > 1.6) or jip_log[i] > 6.9:
-            # Doble verificación mirando adelante
-            if i + 5 < n and jip_log[i+1] < jip_log[i]:
-                continue  # Falso positivo
-            return {
-            'index': i,
-            'time': segment_data['time'][i],
-            'lat': segment_data['lat'][i]
-        }
+        # Criterio 1: Flujo muy alto
+        if log_flux[i] >= thresholds['very_high_flux']:
+            return {'index': i, 'time': segment['time'][i], 'lat': segment['lat'][i], 'deviation': 0}
+        
+        # Criterio 2: Salto significativo
+        required_jump = thresholds['min_jump']
+        if log_flux[i] >= thresholds['high_flux_thresh']:
+            required_jump = thresholds['high_flux_jump']
+        
+        if (jump_ratio >= required_jump and 
+            next_avg > background + 0.3 and
+            np.all(log_flux[i:i+3] > background)):
+            
+            future_avg = np.mean(log_flux[i:min(i+6, n)])
+            if future_avg > background + 0.2:
+                return {'index': i, 'time': segment['time'][i], 'lat': segment['lat'][i], 'deviation': 0}
     
-    return {'index': None, 'time': None, 'lat': None}
+    return {'index': None, 'time': None, 'lat': None, 'deviation': 0}

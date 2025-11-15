@@ -1,43 +1,73 @@
-# b2i.py
 import numpy as np
+from scipy.ndimage import uniform_filter1d
+from .funciones_auxiliares.thresholds import PAPER_THRESHOLDS
 
-def detect_b2i(segment_data):
+def validate_segment_data(segment, required_keys):
+    """Valida que el segmento tenga los datos necesarios"""
+    for key in required_keys:
+        if key not in segment:
+            return False, f"Falta clave: {key}"
+        if segment[key] is None or len(segment[key]) == 0:
+            return False, f"Datos vacíos: {key}"
+    
+    # Verificar consistencia de longitudes
+    base_length = len(segment['time'])
+    for key in required_keys:
+        if len(segment[key]) != base_length:
+            return False, f"Longitud inconsistente: {key}"
+    
+    return True, "OK"
+
+def detect_b2i(segment, energy_channels):
     """
-    Detecta la frontera b2i (límite de isotropía de iones)
-    
-    Args:
-        segment_data (dict): Diccionario con datos del segmento
-    
-    Returns:
-        dict: Diccionario con 'index', 'time' y 'lat' o valores None si no se detecta
+    Boundary 2i (ion isotropy boundary) - VERSIÓN CORREGIDA
     """
-    # Obtener datos relevantes
-    ion_energy_flux = segment_data['ion_energy_flux']
-    n = len(ion_energy_flux)
+    thresholds = PAPER_THRESHOLDS['b2i']
     
-    # Buscar el máximo en el flujo de energía de iones (3-30 keV)
-    max_flux = 0
-    max_index = None
+    # Validar datos del segmento
+    required_keys = ['ion_diff_flux', 'time', 'lat']
+    valid, msg = validate_segment_data(segment, required_keys)
+    if not valid:
+        print(f"   ⚠️ b2i: {msg}")
+        return {'index': None, 'time': None, 'lat': None, 'deviation': 0}
     
-    for i in range(2, n-10):
-        current_avg = np.mean(ion_energy_flux[i-1:i+2])
+    # Máscara para iones 3-30 keV
+    energy_mask = (energy_channels >= thresholds['min_energy']) & (energy_channels <= thresholds['max_energy'])
+    if not np.any(energy_mask):
+        return {'index': None, 'time': None, 'lat': None, 'deviation': 0}
+    
+    # Calcular flujo parcial de iones de alta energía
+    partial_flux = np.sum(segment['ion_diff_flux'][:, energy_mask], axis=1)
+    log_flux = np.log10(partial_flux + 1e-10)
+    
+    # Suavizado de 2s como especifica el paper
+    smoothed_flux = uniform_filter1d(log_flux, size=thresholds['avg_window'])
+    
+    n = len(smoothed_flux)
+    candidates = []
+    
+    # Buscar máximos locales
+    for i in range(thresholds['avg_window'], n - thresholds['lookahead'] - 2):
+        current_avg = np.mean(smoothed_flux[i-thresholds['avg_window']:i])
         
-        # Verificar los próximos 10 segundos
-        for j in range(0, 10, 3):
-            next_avg = np.mean(ion_energy_flux[i+j+1:i+j+4])
-            if next_avg > current_avg:
+        # Verificar que sea mayor o igual que cualquier promedio de 3s en los próximos 10s
+        is_maximum = True
+        for j in range(i+1, min(i+1+thresholds['lookahead'], n-2)):
+            future_avg = np.mean(smoothed_flux[j:j+3])
+            if future_avg > current_avg:
+                is_maximum = False
                 break
-        else:
-            # Encontramos un máximo local
-            if current_avg > max_flux and current_avg > 10.5:
-                max_flux = current_avg
-                max_index = i
+        
+        if (is_maximum and 
+            current_avg >= thresholds['min_flux'] and
+            current_avg == np.max(smoothed_flux[max(0,i-5):min(n,i+5)])):
+            candidates.append(i)
     
-    if max_index is not None:
-        return {
-            'index': max_index,
-            'time': segment_data['time'][max_index],
-            'lat': segment_data['lat'][max_index]
-        }
-    else:
-        return {'index': None, 'time': None, 'lat': None}
+    # Manejar eventos "nose" - descartar máximos aislados
+    if candidates:
+        # Tomar el candidato más ecuatorial (menor índice)
+        best_candidate = min(candidates)
+        return {'index': best_candidate, 'time': segment['time'][best_candidate], 
+                'lat': segment['lat'][best_candidate], 'deviation': 0}
+    
+    return {'index': None, 'time': None, 'lat': None, 'deviation': 0}
