@@ -38,7 +38,6 @@ def detect_b2e(segment, b1e_idx):
     required_keys = ['ele_avg_energy', 'ele_energy_flux', 'time', 'lat']
     valid, msg = validate_segment_data(segment, required_keys)
     if not valid:
-        print(f"   ⚠️ b2e: {msg}")
         return {'index': None, 'time': None, 'lat': None, 'deviation': 0}
     
     # Obtener b1e_idx de forma segura

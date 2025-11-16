@@ -12,7 +12,7 @@ def main(cdf_file, fronteras=None, inicio=None, fin=None):
     # 1. Cargar datos
     datos = ov.cargar_datos_cdf(cdf_file)
     tiempo_final = datos["tiempo_final"]
-    ele_total_energy = datos["ELE_TOTAL_ENERGY_FLUX"]  # ✅ MANTENER para filtrado posterior
+    ele_total_energy = datos["ELE_TOTAL_ENERGY_FLUX"]  
     CHANNEL_ENERGIES = datos["CHANNEL_ENERGIES"]
     tiempo_final_dict = {t: i for i, t in enumerate(tiempo_final)}
     
@@ -35,13 +35,11 @@ def main(cdf_file, fronteras=None, inicio=None, fin=None):
         datos['ELE_TOTAL_ENERGY_FLUX'] = datos['ELE_TOTAL_ENERGY_FLUX'][mascara_tiempo]
         datos['ELE_AVG_ENERGY'] = datos['ELE_AVG_ENERGY'][mascara_tiempo] if 'ELE_AVG_ENERGY' in datos else None
         
-        # ✅ CORRECCIÓN CRÍTICA: Filtrar ele_total_energy también
+        # Filtrar ele_total_energy también
         ele_total_energy = datos['ELE_TOTAL_ENERGY_FLUX']
         
         # Actualizar diccionario de tiempo
         tiempo_final_dict = {t: i for i, t in enumerate(tiempo_final)}
-        
-        print(f"Datos filtrados: {len(tiempo_final)} puntos temporales")
     
     # 3. Calcular energía promedio de electrones si no existe
     if 'ELE_AVG_ENERGY' not in datos or datos['ELE_AVG_ENERGY'] is None:
@@ -63,12 +61,6 @@ def main(cdf_file, fronteras=None, inicio=None, fin=None):
         low=30,
         high=30000
     )
-
-    print(f"Canales filtrados: {len(CHANNEL_ENERGIES_f)} canales entre {CHANNEL_ENERGIES_f[0]} y {CHANNEL_ENERGIES_f[-1]} eV")
-    
-
-    # 5. Integrar flujos con rangos CORRECTOS para orden descendente
-    print("🎯 Integrando flujos con rangos CORRECTOS para orden descendente:")
 
     # Para b2i: iones 3-30 keV (canales 0-6 en orden descendente)
     flujos_iones_b2i = ov.integrar_flujo_diferencial(
@@ -94,15 +86,10 @@ def main(cdf_file, fronteras=None, inicio=None, fin=None):
         canal2=19    # 30 eV (todo el rango)
     )
 
-    # ¡CONVERTIR A ESCALA LOGARÍTMICA! (como espera el paper)
-    print("📊 Convirtiendo flujos a escala logarítmica...")
+    # ¡CONVERTIR A ESCALA LOGARÍTMICA! 
     flujos_iones_log = np.log10(flujos_iones + 1e-10)  # +1e-10 para evitar log(0)
     flujos_elec_log = np.log10(flujos_elec + 1e-10)
     flujos_iones_b2i_log = np.log10(flujos_iones_b2i + 1e-10)
-
-    print(f"✅ Flujos integrados - Iones: {flujos_iones_log.shape}, Electrones: {flujos_elec_log.shape}")
-    print(f"   Rangos log - Iones: [{np.min(flujos_iones_log):.2f}, {np.max(flujos_iones_log):.2f}]")
-    print(f"   Rangos log - Electrones: [{np.min(flujos_elec_log):.2f}, {np.max(flujos_elec_log):.2f}]")
 
     # 6. Separar por latitud
     adjust_SC_AACGM_LAT, adjust_tiempo_final, other_SC_AACGM_LAT, other_tiempo_final, transitions = ov.separar_por_latitud(
@@ -122,28 +109,8 @@ def main(cdf_file, fronteras=None, inicio=None, fin=None):
     # 9. Crear carpeta principal
     main_folder = ov.crear_carpetas(cdf_file)
     
-    # ✅ CORRECCIÓN CRÍTICA: Calcular energy_edges con CHANNEL_ENERGIES_f (filtrado)
+    #Calcular energy_edges con CHANNEL_ENERGIES_f 
     energy_edges = ov.compute_energy_edges(CHANNEL_ENERGIES_f)
-
-    # En OvationRebron23.py, ANTES de llamar procesar_ciclos:
-    print("🔍 VERIFICACIÓN FINAL DE FLUJOS:")
-    print(f"   flujos_iones_log: shape={flujos_iones_log.shape}, " +
-        f"NaN={np.sum(np.isnan(flujos_iones_log))}, " +
-        f"rango=[{np.nanmin(flujos_iones_log):.2f}, {np.nanmax(flujos_iones_log):.2f}]")
-    print(f"   flujos_elec_log: shape={flujos_elec_log.shape}, " +
-        f"NaN={np.sum(np.isnan(flujos_elec_log))}, " +
-        f"rango=[{np.nanmin(flujos_elec_log):.2f}, {np.nanmax(flujos_elec_log):.2f}]")
-    print(f"   flujos_iones_b2i_log: shape={flujos_iones_b2i_log.shape}, " +
-        f"NaN={np.sum(np.isnan(flujos_iones_b2i_log))}, " +
-        f"rango=[{np.nanmin(flujos_iones_b2i_log):.2f}, {np.nanmax(flujos_iones_b2i_log):.2f}]")
-
-    # Verificar consistencia de dimensiones
-    if len(tiempo_final) != len(flujos_iones_log):
-        print(f"❌ ERROR CRÍTICO: Tiempo ({len(tiempo_final)}) y flujos iones ({len(flujos_iones_log)}) no coinciden")
-    if len(tiempo_final) != len(flujos_elec_log):
-        print(f"❌ ERROR CRÍTICO: Tiempo ({len(tiempo_final)}) y flujos elec ({len(flujos_elec_log)}) no coinciden")
-    if len(tiempo_final) != len(flujos_iones_b2i_log):
-        print(f"❌ ERROR CRÍTICO: Tiempo ({len(tiempo_final)}) y flujos b2i ({len(flujos_iones_b2i_log)}) no coinciden")
 
     # Llamar a procesar_ciclos solo si las verificaciones pasan
     if (len(tiempo_final) == len(flujos_iones_log) == 
@@ -168,8 +135,7 @@ def main(cdf_file, fronteras=None, inicio=None, fin=None):
             fronteras=fronteras
         )
                 
-    else:
-        print("❌ ERROR: No se puede procesar ciclos debido a inconsistencias en dimensiones")
+    
 
 if __name__ == "__main__":
     # Configurar parser de argumentos
@@ -183,7 +149,6 @@ if __name__ == "__main__":
     args = parser.parse_args()
     
     if not os.path.isfile(args.cdf_file):
-        print(f"Error: No se encontró el archivo CDF en '{args.cdf_file}'")
         sys.exit(1)
     
     # Procesar argumento de fronteras
@@ -191,6 +156,5 @@ if __name__ == "__main__":
         fronteras = None  # None significa todas
     else:
         fronteras = args.fronteras
-        print(f"Calculando solo las fronteras: {', '.join(fronteras)}")
     
     main(args.cdf_file, fronteras=fronteras, inicio=args.inicio, fin=args.fin)

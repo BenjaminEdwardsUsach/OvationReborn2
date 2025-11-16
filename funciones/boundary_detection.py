@@ -30,9 +30,6 @@ def detect_all_boundaries(segment_data, channel_energies, fronteras=None, hemisp
         'b6': ['ele_energy_flux', 'ion_energy_flux']
     }
     
-    print(f"🔍 Verificando datos en segmento:")
-    print(f"   Claves disponibles: {list(segment_data.keys())}")
-    
     # Función auxiliar para extraer índice de un resultado
     def get_index(boundary_result):
         if boundary_result and boundary_result['index'] is not None:
@@ -44,15 +41,13 @@ def detect_all_boundaries(segment_data, channel_energies, fronteras=None, hemisp
         if frontera in required_keys:
             for key in required_keys[frontera]:
                 if key not in segment_data:
-                    print(f"   ❌ {frontera}: Falta clave '{key}'")
                     return False
                 data = segment_data[key]
                 if data is None or len(data) == 0 or np.all(np.isnan(data)):
-                    print(f"   ❌ {frontera}: Datos inválidos en '{key}'")
                     return False
         return True
     
-    # Detectar cada frontera solicitada CON MANEJO DE EXCEPCIONES
+    # Detectar cada frontera solicitada 
     for frontera in fronteras:
         try:
             if frontera == 'b1e' and check_required_data('b1e'):
@@ -103,12 +98,8 @@ def detect_all_boundaries(segment_data, channel_energies, fronteras=None, hemisp
             else:
                 boundaries[frontera] = default_boundary
                 
-        except Exception as e:
-            print(f"   ⚠️  Error detectando {frontera}: {e}")
+        except Exception:
             boundaries[frontera] = default_boundary
     
-    # Resumen de fronteras detectadas
-    detected = [f for f, b in boundaries.items() if b['index'] is not None]
-    print(f"   ✅ Fronteras detectadas: {detected}")
     
     return boundaries

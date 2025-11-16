@@ -16,7 +16,6 @@ def split_cycle_segment(par, tiempo_final, tiempo_final_dict, flujos, sc_lat, sc
     i1 = tiempo_final_dict.get(t1)
     
     if i0 is None or i1 is None:
-        print(f"⚠️  No se encontraron índices para t0={t0}, t1={t1}")
         return create_empty_segments()
 
     # Asegurar límites y orden
@@ -25,11 +24,7 @@ def split_cycle_segment(par, tiempo_final, tiempo_final_dict, flujos, sc_lat, sc
     i1 = int(max(0, min(i1, N-1)))
     
     if i1 <= i0:
-        print(f"⚠️  Índices inválidos: i0={i0}, i1={i1}, invirtiendo...")
         i0, i1 = i1, i0
-
-    if i1 - i0 < 5:  # Changed from 2 to 5 points minimum
-        print(f"⚠️  Segmento corto pero procesable: {i1 - i0} puntos")
 
     # Extraer subarrays
     flux = flujos[i0:i1+1]
@@ -61,7 +56,6 @@ def split_cycle_segment(par, tiempo_final, tiempo_final_dict, flujos, sc_lat, sc
     lat_final = coords_g[-1]
     
     direccion_original = "ecuador-polo" if abs(lat_inicial) < abs(lat_final) else "polo-ecuador"
-    print(f"🔍 Segmento {i0}-{i1}: dirección original = {direccion_original}")
     
     # Encontrar máximo absoluto de latitud geocéntrica
     max_idx = int(np.argmax(np.abs(coords_g)))
@@ -120,9 +114,7 @@ def split_cycle_segment(par, tiempo_final, tiempo_final_dict, flujos, sc_lat, sc
             'direccion_procesamiento': direccion
         }
 
-    # LÓGICA CORREGIDA: 
-    # - Para visualización: siempre mantener dirección original
-    # - Para procesamiento: siempre usar dirección ecuador-polo
+
     
     if direccion_original == "ecuador-polo":
         # Segmento ya está en dirección correcta

@@ -6,5 +6,5 @@ from OvationRebron23 import main
 
 
 
-ruta_cdf = input("Introduce la ruta al archivo CDF: ")
+ruta_cdf = r"D:\proyectofresh\dmsp-f16_ssjs_precipitating-electrons-ions_20141231000000_20141231235959_cdaweb.cdf"
 main(ruta_cdf)  

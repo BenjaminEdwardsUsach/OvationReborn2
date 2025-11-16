@@ -1,5 +1,4 @@
 import numpy as np
-from scipy.ndimage import uniform_filter1d
 from .funciones_auxiliares.thresholds import PAPER_THRESHOLDS
 
 def validate_segment_data(segment, required_keys):
@@ -32,7 +31,7 @@ def detect_b1e(segment, energy_channels):
         return {'index': None, 'time': None, 'lat': None, 'deviation': 0}
     
     # 1. Determinar canales de energía según condiciones del spacecraft
-    # ✅ USAR UMBRALES DEL PAPER EN LUGAR DE VALORES FIJOS
+    # USAR UMBRALES DEL PAPER EN LUGAR DE VALORES FIJOS
     low_mask = (energy_channels >= thresholds.get('low_energy_min', 32)) & (energy_channels <= thresholds.get('low_energy_max', 47))
     
     # Verificar fotoelectrones (raro en nightside)
@@ -59,8 +58,8 @@ def detect_b1e(segment, energy_channels):
     
     # 4. Algoritmo principal: comparar 3 anteriores vs 3 siguientes
     for i in range(3, n - 3):
-        prev_avg = np.mean(log_flux[i-3:i])      # 3 espectros anteriores
-        next_avg = np.mean(log_flux[i+1:i+4])    # 3 espectros siguientes
+        prev_avg = np.mean(log_flux[i-3:i])    # 3 anteriores
+        next_avg = np.mean(log_flux[i:i+3])    # 3 siguientes ← CORREGIR
         
         # Evitar división por cero
         if prev_avg <= 0:

@@ -28,7 +28,6 @@ def detect_b1i(segment, energy_channels):
     required_keys = ['ion_diff_flux', 'time', 'lat']
     valid, msg = validate_segment_data(segment, required_keys)
     if not valid:
-        print(f"   ⚠️ b1i: {msg}")
         return {'index': None, 'time': None, 'lat': None, 'deviation': 0}
     
     # 1. Determinar canales de energía usando umbrales del paper
