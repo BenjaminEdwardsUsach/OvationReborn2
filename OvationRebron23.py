@@ -8,7 +8,7 @@ import argparse
 import funciones as ov
 
 def main(cdf_file, fronteras=None, inicio=None, fin=None):
-    """Script principal con detección completa de fronteras"""
+    """Script principal CORREGIDO - Preserva espectros diferenciales completos"""
     # 1. Cargar datos
     datos = ov.cargar_datos_cdf(cdf_file)
     tiempo_final = datos["tiempo_final"]
@@ -50,11 +50,11 @@ def main(cdf_file, fronteras=None, inicio=None, fin=None):
             if np.any(valid_mask):
                 weighted_energy = np.sum(flux[valid_mask] * datos['CHANNEL_ENERGIES'][valid_mask])
                 total_flux = np.sum(flux[valid_mask])
-                ele_avg_energy[i] = weighted_energy / total_flux
+                ele_avg_energy[i] = weighted_energy / total_flux if total_flux > 0 else 0.0
         datos['ELE_AVG_ENERGY'] = ele_avg_energy
     
-    # 4. Filtrar canales
-    CHANNEL_ENERGIES_f, ELE_DIFF_ENERGY_FLUX_f, ION_DIFF_ENERGY_FLUX_f, delta = ov.filtrar_canales(
+    # 4. Filtrar canales (pero MANTENER ESPECTROS DIFERENCIALES)
+    CHANNEL_ENERGIES_f, ELE_DIFF_ESPECTROS, ION_DIFF_ESPECTROS, delta = ov.filtrar_canales(
         datos['CHANNEL_ENERGIES'],
         datos['ELE_DIFF_ENERGY_FLUX'],
         datos['ION_DIFF_ENERGY_FLUX'],
@@ -62,33 +62,33 @@ def main(cdf_file, fronteras=None, inicio=None, fin=None):
         high=30000
     )
 
+    # 5. Calcular flujos integrados ESPECÍFICOS solo para lo necesario
     # Para b2i: iones 3-30 keV (canales 0-6 en orden descendente)
     flujos_iones_b2i = ov.integrar_flujo_diferencial(
-        ION_DIFF_ENERGY_FLUX_f,
+        ION_DIFF_ESPECTROS,
         delta,
         canal1=0,   # 30000 eV (más energético)
         canal2=7     # 3000 eV (límite inferior de 3 keV)
     )
 
-    # Para electrones: rango completo o específico
-    flujos_elec = ov.integrar_flujo_diferencial(
-        ELE_DIFF_ENERGY_FLUX_f,
+    # Flujos totales para visualización y algunas fronteras
+    flujos_elec_totales = ov.integrar_flujo_diferencial(
+        ELE_DIFF_ESPECTROS,
         delta,
         canal1=0,   # 30000 eV
         canal2=19    # 30 eV (todo el rango)
     )
 
-    # Para otras fronteras que necesiten flujo total de iones
-    flujos_iones = ov.integrar_flujo_diferencial(
-        ION_DIFF_ENERGY_FLUX_f,
+    flujos_iones_totales = ov.integrar_flujo_diferencial(
+        ION_DIFF_ESPECTROS,
         delta, 
         canal1=0,
         canal2=19    # 30 eV (todo el rango)
     )
 
-    # ¡CONVERTIR A ESCALA LOGARÍTMICA! 
-    flujos_iones_log = np.log10(flujos_iones + 1e-10)  # +1e-10 para evitar log(0)
-    flujos_elec_log = np.log10(flujos_elec + 1e-10)
+    # ¡CONVERTIR A ESCALA LOGARÍTMICA solo para visualización!
+    flujos_iones_log = np.log10(flujos_iones_totales + 1e-10)
+    flujos_elec_log = np.log10(flujos_elec_totales + 1e-10)
     flujos_iones_b2i_log = np.log10(flujos_iones_b2i + 1e-10)
 
     # 6. Separar por latitud
@@ -109,12 +109,13 @@ def main(cdf_file, fronteras=None, inicio=None, fin=None):
     # 9. Crear carpeta principal
     main_folder = ov.crear_carpetas(cdf_file)
     
-    #Calcular energy_edges con CHANNEL_ENERGIES_f 
+    # Calcular energy_edges con CHANNEL_ENERGIES_f 
     energy_edges = ov.compute_energy_edges(CHANNEL_ENERGIES_f)
 
-    # Llamar a procesar_ciclos solo si las verificaciones pasan
+    # 10. Verificar dimensiones antes de procesar
     if (len(tiempo_final) == len(flujos_iones_log) == 
-        len(flujos_elec_log) == len(flujos_iones_b2i_log)):
+        len(flujos_elec_log) == len(flujos_iones_b2i_log) ==
+        len(ELE_DIFF_ESPECTROS) == len(ION_DIFF_ESPECTROS)):
 
         ov.procesar_ciclos(
             pares_extremos,
@@ -122,20 +123,20 @@ def main(cdf_file, fronteras=None, inicio=None, fin=None):
             tiempo_final_dict,
             datos['SC_AACGM_LAT'],
             datos['SC_GEOCENTRIC_LAT'],
-            flujos_iones_log,           # Flujo total iones (log)
-            flujos_elec_log,            # Flujo total electrones (log)
-            flujos_iones_b2i_log,       # Flujo b2i específico
+            flujos_iones_log,           # Flujo total iones (log) - para visualización
+            flujos_elec_log,            # Flujo total electrones (log) - para visualización
+            flujos_iones_b2i_log,       # Flujo b2i específico - para frontera b2i
             ele_total_energy,
-            ELE_DIFF_ENERGY_FLUX_f,
+            ELE_DIFF_ESPECTROS,         # ESPECTROS DIFERENCIALES COMPLETOS - para detección
             datos['ELE_AVG_ENERGY'],
-            ION_DIFF_ENERGY_FLUX_f,
+            ION_DIFF_ESPECTROS,         # ESPECTROS DIFERENCIALES COMPLETOS - para detección
             CHANNEL_ENERGIES_f,
             energy_edges,
             main_folder,
             fronteras=fronteras
         )
-                
-    
+    else:
+        print("ERROR: Dimensiones inconsistentes entre arrays de datos")
 
 if __name__ == "__main__":
     # Configurar parser de argumentos
@@ -149,6 +150,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
     
     if not os.path.isfile(args.cdf_file):
+        print(f"Error: Archivo {args.cdf_file} no encontrado")
         sys.exit(1)
     
     # Procesar argumento de fronteras
