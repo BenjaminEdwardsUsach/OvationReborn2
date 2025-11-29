@@ -21,10 +21,3 @@ def validate_flux_units(segment, expected_scale='log10'):
     
     return warnings
 
-def convert_to_log10(flux_array):
-    """
-    Convierte flujos a escala log10 si es necesario
-    """
-    if np.max(flux_array) > 50:  # Probablemente está en escala lineal
-        return np.log10(flux_array + 1e-10)
-    return flux_array

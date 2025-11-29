@@ -40,7 +40,7 @@ def detect_b1i(segment, energy_channels):
         charging_mask = (high_flux < 0.1 * np.sum(segment['ion_diff_flux'][:, low_mask], axis=1)) & (segment['lat'] < 60)
         if np.any(charging_mask):
             # Usar canales 47-68 eV
-            clean_mask = (energy_channels > thresholds.get('clean_energy_min', 47)) & (energy_channels < thresholds.get('clean_energy_max', 68))
+            clean_mask = (energy_channels > thresholds.get('clean_energy_minv ', 47)) & (energy_channels < thresholds.get('clean_energy_max', 68))
             if np.any(clean_mask):
                 low_mask = clean_mask
     

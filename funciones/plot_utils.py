@@ -327,40 +327,47 @@ def plot_polar_cycle(seg1, seg2, boundaries1, boundaries2,
             return
 
         try:
-            # DIAGNÓSTICO: Mostrar dimensiones
+            # Dimensiones del espectrograma
             n_energy, n_time = spec.shape
-            
-            theta = np.linspace(0, 2 * np.pi, n_time)
-            r = energy_edges[:n_energy]  
-            
-            # Crear mallas 2D
-            theta_grid, r_grid = np.meshgrid(theta, r)
-            
-            # Verificar compatibilidad de dimensiones
-            if theta_grid.shape == spec.shape and r_grid.shape == spec.shape:
-                im = ax.pcolormesh(theta_grid, r_grid, spec, norm=LogNorm(), shading='auto', cmap='viridis')
+
+            # Bordes angulares para pcolormesh (n_time+1) y centros (n_time)
+            theta_edges = np.linspace(0, 2 * np.pi, n_time + 1, endpoint=True)
+            theta_centers = 0.5 * (theta_edges[:-1] + theta_edges[1:])
+
+            # Bordes radiales: esperamos que `energy_edges` tenga longitud n_energy+1
+            if len(energy_edges) == n_energy + 1:
+                r_edges = energy_edges
             else:
-                im = ax.imshow(spec, extent=[0, 2*np.pi, energy_edges[-1], energy_edges[0]], 
-                              aspect='auto', norm=LogNorm(), cmap='viridis')
-                ax.set_yscale('log')
-            
+                # Si nos pasan energías en lugar de bordes, construir bordes por promedios
+                energies = np.asarray(energy_edges[:n_energy])
+                r_edges = np.concatenate(( [energies[0] - (energies[1]-energies[0])/2],
+                                           (energies[:-1] + energies[1:]) / 2,
+                                           [energies[-1] + (energies[-1]-energies[-2])/2] ))
+
+            # Crear mallas de bordes para pcolormesh
+            theta_grid, r_grid = np.meshgrid(theta_edges, r_edges)
+
+            # pcolormesh con bordes asegura que los bins y las líneas coincidan con los centros
+            im = ax.pcolormesh(theta_grid, r_grid, spec, norm=LogNorm(), shading='auto', cmap='viridis')
+            ax.set_yscale('log')
+
             ax.set_title(title, pad=20)
             ax.set_theta_zero_location("N")
             ax.set_theta_direction(-1)
             ax.grid(True, alpha=0.3)
-            
-            # Añadir líneas para las fronteras
+
+            # Añadir líneas para las fronteras usando los centros angulares
             for b_name, b_data in boundaries.items():
                 if (b_data is not None and b_data['index'] is not None and 
                     b_data['index'] < n_time):
-                    b_theta = theta[b_data['index']] if b_data['index'] < len(theta) else theta[-1]
+                    b_theta = theta_centers[b_data['index']]
                     ax.axvline(b_theta, color=boundary_colors.get(b_name, 'gray'), 
                               linestyle='--', linewidth=2.0, alpha=0.8)
-            
+
             # Añadir barra de color
             if 'im' in locals():
                 plt.colorbar(im, ax=ax, shrink=0.8, pad=0.05, label='Flujo Diferencial')
-            
+
         except Exception as e:
             ax.text(0.5, 0.5, f'Error: {str(e)}', transform=ax.transAxes, 
                    ha='center', va='center', fontsize=10)
@@ -381,34 +388,37 @@ def plot_polar_cycle(seg1, seg2, boundaries1, boundaries2,
         try:
             times = segment['time']
             flux = segment[flux_key]
-            
-            # Convertir tiempo a ángulo
+
+            # Número temporal
             n_time = len(times)
-            theta = np.linspace(0, 2 * np.pi, n_time)
-            
-            # Normalizar el flujo para el radio
+
+            # Bordes y centros angulares (coherentes con espectrograma)
+            theta_edges = np.linspace(0, 2 * np.pi, n_time + 1, endpoint=True)
+            theta_centers = 0.5 * (theta_edges[:-1] + theta_edges[1:])
+
+            # Normalizar el flujo para el radio (0..1)
             flux_clean = np.nan_to_num(flux, nan=-10)
             flux_pos = np.maximum(flux_clean, -9)
             if np.max(flux_pos) > np.min(flux_pos):
                 flux_normalized = 0.1 + 0.8 * (flux_pos - np.min(flux_pos)) / (np.max(flux_pos) - np.min(flux_pos))
             else:
                 flux_normalized = np.ones_like(flux_pos) * 0.5
-            
-            # Graficar flujo polar
-            ax.plot(theta, flux_normalized, 'b-', linewidth=2, label='Flujo')
-            ax.fill_between(theta, 0.1, flux_normalized, alpha=0.3, color='blue')
-            
+
+            # Graficar flujo polar usando los centros angulares
+            ax.plot(theta_centers, flux_normalized, 'b-', linewidth=2, label='Flujo')
+            ax.fill_between(theta_centers, 0.1, flux_normalized, alpha=0.3, color='blue')
+
             ax.set_title(title, pad=20)
             ax.grid(True, alpha=0.3)
-            
-            # Añadir líneas para las fronteras
+
+            # Añadir líneas para las fronteras usando los mismos centros
             for b_name, b_data in boundaries.items():
                 if (b_data is not None and b_data['index'] is not None and 
                     b_data['index'] < n_time):
-                    b_theta = theta[b_data['index']]
+                    b_theta = theta_centers[b_data['index']]
                     ax.axvline(b_theta, color=boundary_colors.get(b_name, 'gray'),
                               linestyle='--', linewidth=2.0, alpha=0.8, label=b_name)
-            
+
             # Configurar polar
             ax.set_theta_zero_location("N")
             ax.set_theta_direction(-1)

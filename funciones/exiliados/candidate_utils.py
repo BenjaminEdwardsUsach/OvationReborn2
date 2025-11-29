@@ -1,23 +1,3 @@
-import numpy as np
-from .clean_local_outliers import clean_local_outliers
-from .detectar_b2i_sliding_vec import detectar_b2i_sliding_vec
-
-def detect_b2i_candidate(segment, threshold_percentile=85, **kwargs):
-    """
-    Para un segmento con keys 'flux' y 'time':
-      - limpia outliers
-      - calcula umbral en percentil
-      - selecciona índices sobre umbral
-      - detecta candidato b2i con sliding window
-    Retorna dict con:
-      't_candidate', 'flux_candidate', 'flux_recorted', 'time_recorted'
-    """
-    flux = np.array(segment['flux'])
-    times = segment['time']
-    if len(flux) < 2:
-        return {
-            't_candidate': times[0],
-            'flux_candidate': float(flux[0]),
             'flux_recorted': flux,
             'time_recorted': times
         }
