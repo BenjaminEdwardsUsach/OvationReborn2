@@ -1,0 +1,147 @@
+{
+    "boundaries": {
+        "primera_mitad": {
+            "b1e": {
+                "index": 511,
+                "time": "2014-12-31T01:30:36.000000000",
+                "lat": -56.44715654783454,
+                "deviation": 0,
+                "params": {}
+            },
+            "b1i": {
+                "index": 707,
+                "time": "2014-12-31T01:33:52.000000000",
+                "lat": -67.32832645708572,
+                "deviation": 0,
+                "params": {}
+            },
+            "b2e": {
+                "index": 517,
+                "time": "2014-12-31T01:30:42.000000000",
+                "lat": -56.78614847847742,
+                "deviation": 0,
+                "params": {}
+            },
+            "b2i": {
+                "index": null,
+                "time": null,
+                "lat": null,
+                "deviation": 0
+            },
+            "b3a": {
+                "index": 43,
+                "time": "2014-12-31T01:22:48.000000000",
+                "lat": -29.567033288460173,
+                "deviation": 0,
+                "params": {}
+            },
+            "b3b": {
+                "index": 569,
+                "time": "2014-12-31T01:31:34.000000000",
+                "lat": -59.71239605336783,
+                "deviation": 0,
+                "params": {}
+            },
+            "b4s": {
+                "index": 673,
+                "time": "2014-12-31T01:33:18.000000000",
+                "lat": -65.47919070968359,
+                "deviation": 0,
+                "params": {}
+            },
+            "b5e": {
+                "index": null,
+                "time": null,
+                "lat": null,
+                "deviation": 0
+            },
+            "b5i": {
+                "index": null,
+                "time": null,
+                "lat": null,
+                "deviation": 0
+            },
+            "b6": {
+                "index": null,
+                "time": null,
+                "lat": null,
+                "deviation": 0
+            }
+        },
+        "segunda_mitad": {
+            "b1e": {
+                "index": 2076,
+                "time": "2014-12-31T02:14:26.000000000",
+                "lat": 31.534152841972983,
+                "deviation": 0,
+                "params": {}
+            },
+            "b1i": {
+                "index": 122,
+                "time": "2014-12-31T01:41:52.000000000",
+                "lat": -78.78809869695512,
+                "deviation": 0,
+                "params": {}
+            },
+            "b2e": {
+                "index": 2065,
+                "time": "2014-12-31T02:14:15.000000000",
+                "lat": 30.896229973211774,
+                "deviation": 0,
+                "params": {}
+            },
+            "b2i": {
+                "index": null,
+                "time": null,
+                "lat": null,
+                "deviation": 0
+            },
+            "b3a": {
+                "index": 2078,
+                "time": "2014-12-31T02:14:28.000000000",
+                "lat": 31.650125325307236,
+                "deviation": 0,
+                "params": {}
+            },
+            "b3b": {
+                "index": 31,
+                "time": "2014-12-31T01:40:21.000000000",
+                "lat": -81.14800891840007,
+                "deviation": 0,
+                "params": {}
+            },
+            "b4s": {
+                "index": 90,
+                "time": "2014-12-31T01:41:20.000000000",
+                "lat": -79.8704011249983,
+                "deviation": 0,
+                "params": {}
+            },
+            "b5e": {
+                "index": null,
+                "time": null,
+                "lat": null,
+                "deviation": 0
+            },
+            "b5i": {
+                "index": null,
+                "time": null,
+                "lat": null,
+                "deviation": 0
+            },
+            "b6": {
+                "index": null,
+                "time": null,
+                "lat": null,
+                "deviation": 0
+            }
+        }
+    },
+    "direccion_original": "ecuador-polo",
+    "segment_info": {
+        "seg1_processing_direction": "ecuador-polo",
+        "seg2_processing_direction": "ecuador-polo",
+        "seg1_original_direction": "ecuador-polo",
+        "seg2_original_direction": "polo-ecuador"
+    }
+}

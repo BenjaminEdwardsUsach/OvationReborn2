@@ -2,7 +2,17 @@ import numpy as np
 
 def integrar_flujo_diferencial(diff_flux, delta, canal1=0, canal2=6):
     """
-    Integra el flujo diferencial sobre energía 
+    Integra el flujo diferencial sobre energía.
+    
+    Parámetros:
+    -----------
+    diff_flux : array - Flujo diferencial [eV/cm²/ΔeV/ster/s]
+    delta : array - Ancho de canales de energía [eV]
+    canal1, canal2 : int - Rango de canales a integrar
+    
+    Retorna:
+    --------
+    array - Flujo total integrado [eV/cm²/ster/s]
     """
     flujos_integrados = []
 

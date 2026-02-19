@@ -5,30 +5,35 @@ from .io_utils import save_cycle_info
 from .plot_utils import plot_cycle, plot_polar_cycle
 from .boundary_detection import detect_all_boundaries
 
-def procesar_ciclos(pares_extremos, tiempo_final, tiempo_final_dict, sc_lat, sc_geo,
+def procesar_ciclos(pares_extremos, tiempo_final, tiempo_final_dict, sc_lat, sc_geo, sc_aacgm_lon, tiempo_epoch,
                     flujos_iones_log, flujos_elec_log, flujos_iones_b2i_log,
                     ele_total_energy, ele_diff_flux, ele_avg_energy, 
                     ion_diff_filtrado, channel_energies, energy_edges, 
                     main_folder, fronteras=None):
     
     # Convertir datos a arrays NumPy
-    flujos_iones_log = np.asarray(flujos_iones_log)
-    flujos_elec_log = np.asarray(flujos_elec_log)
-    flujos_iones_b2i_log = np.asarray(flujos_iones_b2i_log)
-    ion_diff_filtrado = np.asarray(ion_diff_filtrado)
-    ele_diff_flux = np.asarray(ele_diff_flux)
-    ele_avg_energy = np.asarray(ele_avg_energy)
+    flujos_iones_log = np.asarray(flujos_iones_log)  # log: Flujo total de iones [eV/cm²/ster/s]
+    flujos_elec_log = np.asarray(flujos_elec_log)    # log: Flujo total de electrones [eV/cm²/ster/s]
+    flujos_iones_b2i_log = np.asarray(flujos_iones_b2i_log)  # log: Flujo de iones en banda B2i [eV/cm²/ster/s]
+    ion_diff_filtrado = np.asarray(ion_diff_filtrado)  # Flujo diferencial de iones [eV/cm²/ΔeV/ster/s]
+    ele_diff_flux = np.asarray(ele_diff_flux)  # Flujo diferencial de electrones [eV/cm²/ΔeV/ster/s]
+    ele_avg_energy = np.asarray(ele_avg_energy)  # Energía promedio de electrones [eV]
+    sc_aacgm_lon = np.asarray(sc_aacgm_lon)  # Longitud AACGM [grados]
 
     # Crear diccionario con datos globales para pasar a las funciones
+    # Todas las variables de flujo están en escala logarítmica excepto los flujos diferenciales
     global_data = {
-        'ele_diff_flux': ele_diff_flux,
-        'ion_diff_flux': ion_diff_filtrado,
-        'flux_ion': flujos_iones_log,
-        'flux_ele': flujos_elec_log,
-        'ion_energy_flux_b2i': flujos_iones_b2i_log,
-        'ele_energy_flux': flujos_elec_log,  # Usar mismo que flux_ele por ahora
+        'ele_diff_flux': ele_diff_flux,  # [eV/cm²/ΔeV/ster/s] - Flujo diferencial de electrones sin integrar
+        'ion_diff_flux': ion_diff_filtrado,  # [eV/cm²/ΔeV/ster/s] - Flujo diferencial de iones sin integrar
+        'flux_ion': flujos_iones_log,  # log[eV/cm²/ster/s] - Flujo total integrado de iones
+        'flux_ele': flujos_elec_log,  # log[eV/cm²/ster/s] - Flujo total integrado de electrones
+        'ion_energy_flux_b2i': flujos_iones_b2i_log,  # log[eV/cm²/ster/s] - Flujo de la banda B2i
+        'ele_energy_flux': flujos_elec_log,  # Usar mismo que flux_ele por ahora [log eV/cm²/ster/s]
         'ion_energy_flux': flujos_iones_log,  # Usar mismo que flux_ion por ahora
-        'ele_avg_energy': ele_avg_energy
+        'ele_avg_energy': ele_avg_energy,
+        'sc_aacgm_lon': sc_aacgm_lon,
+        'tiempo_epoch': tiempo_epoch,
+        'tiempo_final': np.asarray(tiempo_final)
     }
     
     for idx, par in enumerate(pares_extremos):
@@ -63,6 +68,45 @@ def procesar_ciclos(pares_extremos, tiempo_final, tiempo_final_dict, sc_lat, sc_
                     'direccion': segment.get('direccion_procesamiento', 'desconocida'),
                     'segment_type': segment_type
                 }
+                
+                # Calcular MLT (Magnetic Local Time)
+                try:
+                    # Obtener longitud geomagnética para este segmento
+                    valid_indices = indices[indices < len(global_data['sc_aacgm_lon'])]
+                    if len(valid_indices) > 0:
+                        aacgm_lon = global_data['sc_aacgm_lon'][valid_indices]
+                        
+                        # Calcular UT (hora universal) en horas desde epoch
+                        tiempo_segment = np.asarray(segment['time'])
+                        
+                        # Convertir tiempos a horas UT
+                        ut_hours = np.zeros(len(tiempo_segment))
+                        
+                        for i, t in enumerate(tiempo_segment):
+                            try:
+                                # Intentar convertir a datetime
+                                if isinstance(t, np.datetime64):
+                                    # Convertir numpy.datetime64 a datetime de Python
+                                    ts = (t - np.datetime64(0, 's')).astype(int)
+                                    dt_obj = __import__('datetime').datetime.utcfromtimestamp(ts)
+                                else:
+                                    # Si es ya un datetime, usarlo directamente
+                                    dt_obj = t if hasattr(t, 'hour') else __import__('datetime').datetime(1970, 1, 1)
+                                
+                                ut_hours[i] = float(dt_obj.hour) + float(dt_obj.minute)/60.0 + float(dt_obj.second)/3600.0
+                            except:
+                                ut_hours[i] = 0.0
+                        
+                        # MLT = (UT + AACGM_LON/15) mod 24
+                        mlt = np.mod(ut_hours + aacgm_lon / 15.0, 24.0)
+                        segment_data['mlt'] = mlt
+                        segment_data['aacgm_lon'] = aacgm_lon
+                except Exception as e:
+                    print(f"Error calculando MLT: {e}")
+                    import traceback
+                    traceback.print_exc()
+                    segment_data['mlt'] = np.array([])
+                    segment_data['aacgm_lon'] = np.array([])
                 
                 # Añadir datos de flujos desde los arrays globales
                 if len(indices) > 0:
@@ -100,6 +144,8 @@ def procesar_ciclos(pares_extremos, tiempo_final, tiempo_final_dict, sc_lat, sc_
                     'ele_energy_flux': np.array([]),
                     'flux_ele': np.array([]),
                     'ele_avg_energy': np.array([]),
+                    'mlt': np.array([]),
+                    'aacgm_lon': np.array([]),
                     'energy_edges': energy_edges,
                     'direccion': "desconocida",
                     'segment_type': segment_type

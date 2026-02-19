@@ -64,8 +64,9 @@ def plot_cycle(seg1, seg2, boundaries1, boundaries2,
     
     mono_font = FontProperties(family='monospace')
 
-    def plot_spectrogram(ax, spec, title, segment, boundaries):
-        """Grafica espectrogramas con SEGMENTO COMPLETO y fronteras"""
+    def plot_spectrogram(ax, spec, title, segment, boundaries, particle_type='both'):
+        """Grafica espectrogramas con SEGMENTO COMPLETO y fronteras
+        particle_type: 'ion', 'ele' o 'both' para filtrar fronteras"""
         if len(segment['time']) == 0:
             ax.text(0.5, 0.5, 'Sin datos', transform=ax.transAxes, ha='center', va='center', fontsize=12)
             ax.set_title(title)
@@ -99,27 +100,41 @@ def plot_cycle(seg1, seg2, boundaries1, boundaries2,
             ax.set_title(title, fontsize=10, pad=10)
             ax.xaxis.set_major_formatter(mdates.DateFormatter('%H:%M:%S'))
             
+            # Función auxiliar para filtrar fronteras según tipo de partícula
+            def should_show_boundary(boundary_name, p_type):
+                if p_type == 'both':
+                    return True
+                elif p_type == 'ion':
+                    # Mostrar solo fronteras de iones (sufijo 'i')
+                    return boundary_name.endswith('i') or boundary_name in ['b4s', 'b3a', 'b3b', 'b6']
+                elif p_type == 'ele':
+                    # Mostrar solo fronteras de electrones (sufijo 'e')
+                    return boundary_name.endswith('e') or boundary_name in ['b4s', 'b3a', 'b3b', 'b6']
+                return False
+            
             # Añadir líneas verticales para las fronteras SOBRE el espectrograma completo
             for b_name, b_data in boundaries.items():
-                if (b_data is not None and b_data['index'] is not None and 
-                    b_data['index'] < len(time_python)):
-                    b_time = time_num[b_data['index']]
-                    ax.axvline(b_time, color=boundary_colors.get(b_name, 'white'), 
-                            linestyle='--', linewidth=2.0, alpha=0.8)
-                    # Etiquetar la frontera
-                    ax.text(b_time, energy_edges[-2], b_name, 
-                           color=boundary_colors.get(b_name, 'white'), fontsize=8,
-                           bbox=dict(boxstyle="round,pad=0.3", facecolor='black', alpha=0.7))
+                if should_show_boundary(b_name, particle_type):
+                    if (b_data is not None and b_data['index'] is not None and 
+                        b_data['index'] < len(time_python)):
+                        b_time = time_num[b_data['index']]
+                        ax.axvline(b_time, color=boundary_colors.get(b_name, 'white'), 
+                                linestyle='--', linewidth=2.0, alpha=0.8)
+                        # Etiquetar la frontera
+                        ax.text(b_time, energy_edges[-2], b_name, 
+                               color=boundary_colors.get(b_name, 'white'), fontsize=8,
+                               bbox=dict(boxstyle="round,pad=0.3", facecolor='black', alpha=0.7))
             
-            # Añadir colorbar
-            plt.colorbar(im, ax=ax, label='Flujo Diferencial (eV/cm²/sr/s/eV)')
+            # Añadir colorbar con etiqueta de unidades
+            plt.colorbar(im, ax=ax, label='Flujo Diferencial [eV/cm²/ΔeV/ster/s]')
             
         except Exception as e:
             ax.text(0.5, 0.5, f'Error: {str(e)}', transform=ax.transAxes, ha='center', va='center', fontsize=10)
             ax.set_title(title)
 
-    def plot_flux(ax, segment, boundaries, flux_key, title):
-        """Grafica flujos con SEGMENTO COMPLETO y fronteras"""
+    def plot_flux(ax, segment, boundaries, flux_key, title, particle_type='both'):
+        """Grafica flujos con SEGMENTO COMPLETO y fronteras
+        particle_type: 'ion', 'ele' o 'both' para filtrar fronteras"""
         if len(segment['time']) == 0:
             ax.text(0.5, 0.5, 'Sin datos', transform=ax.transAxes, ha='center', va='center', fontsize=12)
             ax.set_title(title)
@@ -135,11 +150,11 @@ def plot_cycle(seg1, seg2, boundaries1, boundaries2,
             time_python = [convert_to_datetime(t) for t in segment['time']]
             flux_data = segment[flux_key]
             
-            # Graficar FLUJO COMPLETO
-            ax.plot(time_python, flux_data, 'b-', linewidth=1.5, label='Flujo integrado', alpha=0.8)
+            # Graficar FLUJO COMPLETO CON PUNTOS EN LUGAR DE LÍNEAS
+            ax.scatter(time_python, flux_data, color='blue', s=30, label='Flujo integrado', alpha=0.6, marker='o')
             ax.set_title(title, fontsize=10, pad=10)
             ax.grid(True, alpha=0.3)
-            ax.set_ylabel('Log Flux')
+            ax.set_ylabel('Log Flujo Total [eV/cm²/ster/s]')
             
             # Configurar ticks temporales para mostrar todo el segmento
             if len(time_python) > 0:
@@ -169,15 +184,28 @@ def plot_cycle(seg1, seg2, boundaries1, boundaries2,
                 ax.set_xticks(tick_times)
                 ax.set_xticklabels(tick_labels, rotation=0, ha='center', fontsize=8)
             
+            # Función auxiliar para filtrar fronteras según tipo de partícula
+            def should_show_boundary(boundary_name, p_type):
+                if p_type == 'both':
+                    return True
+                elif p_type == 'ion':
+                    # Mostrar solo fronteras de iones (sufijo 'i')
+                    return boundary_name.endswith('i') or boundary_name in ['b4s', 'b3a', 'b3b', 'b6']
+                elif p_type == 'ele':
+                    # Mostrar solo fronteras de electrones (sufijo 'e')
+                    return boundary_name.endswith('e') or boundary_name in ['b4s', 'b3a', 'b3b', 'b6']
+                return False
+            
             # Añadir líneas verticales para las fronteras SOBRE el flujo completo
             for b_name, b_data in boundaries.items():
-                if (b_data is not None and b_data['index'] is not None and 
-                    b_data['index'] < len(time_python)):
-                    b_time = time_python[b_data['index']]
-                    b_lat = segment['coords_aacgm'][b_data['index']]
-                    
-                    ax.axvline(b_time, color=boundary_colors.get(b_name, 'red'),
-                            linestyle='--', linewidth=2.0, alpha=0.8, label=f'{b_name} ({b_lat:.1f}°)')
+                if should_show_boundary(b_name, particle_type):
+                    if (b_data is not None and b_data['index'] is not None and 
+                        b_data['index'] < len(time_python)):
+                        b_time = time_python[b_data['index']]
+                        b_lat = segment['coords_aacgm'][b_data['index']]
+                        
+                        ax.axvline(b_time, color=boundary_colors.get(b_name, 'red'),
+                                linestyle='--', linewidth=2.0, alpha=0.8, label=f'{b_name} ({b_lat:.1f}°)')
             
             # Solo añadir leyenda una vez
             if flux_key == 'flux_ele':
@@ -189,10 +217,10 @@ def plot_cycle(seg1, seg2, boundaries1, boundaries2,
 
     # --- Segmento 1 (Norte) ---
     if not seg1_empty:
-        plot_spectrogram(axs[0,0], spec1_ion, 'Espectrograma de Iones - Segmento Norte', seg1, boundaries1)
-        plot_spectrogram(axs[1,0], spec1_ele, 'Espectrograma de Electrones - Segmento Norte', seg1, boundaries1)
-        plot_flux(axs[2,0], seg1, boundaries1, flux_key='flux_ion', title='Flujo Integrado de Iones - Norte')
-        plot_flux(axs[3,0], seg1, boundaries1, flux_key='flux_ele', title='Flujo Integrado de Electrones - Norte')
+        plot_spectrogram(axs[0,0], spec1_ion, 'Espectrograma de Iones - Segmento Norte\n[eV/cm²/ΔeV/ster/s]', seg1, boundaries1, particle_type='ion')
+        plot_spectrogram(axs[1,0], spec1_ele, 'Espectrograma de Electrones - Segmento Norte\n[eV/cm²/ΔeV/ster/s]', seg1, boundaries1, particle_type='ele')
+        plot_flux(axs[2,0], seg1, boundaries1, flux_key='flux_ion', title='Flujo Integrado de Iones - Norte [eV/cm²/ster/s]', particle_type='ion')
+        plot_flux(axs[3,0], seg1, boundaries1, flux_key='flux_ele', title='Flujo Integrado de Electrones - Norte [eV/cm²/ster/s]', particle_type='ele')
     else:
         for i in range(4):
             axs[i,0].text(0.5, 0.5, 'Segmento Norte vacío', transform=axs[i,0].transAxes, 
@@ -201,10 +229,10 @@ def plot_cycle(seg1, seg2, boundaries1, boundaries2,
 
     # --- Segmento 2 (Sur) ---
     if seg2 is not None and not seg2_empty:
-        plot_spectrogram(axs[0,1], spec2_ion, 'Espectrograma de Iones - Segmento Sur', seg2, boundaries2_adj)
-        plot_spectrogram(axs[1,1], spec2_ele, 'Espectrograma de Electrones - Segmento Sur', seg2, boundaries2_adj)
-        plot_flux(axs[2,1], seg2, boundaries2_adj, flux_key='flux_ion', title='Flujo Integrado de Iones - Sur')
-        plot_flux(axs[3,1], seg2, boundaries2_adj, flux_key='flux_ele', title='Flujo Integrado de Electrones - Sur')
+        plot_spectrogram(axs[0,1], spec2_ion, 'Espectrograma de Iones - Segmento Sur\n[eV/cm²/ΔeV/ster/s]', seg2, boundaries2_adj, particle_type='ion')
+        plot_spectrogram(axs[1,1], spec2_ele, 'Espectrograma de Electrones - Segmento Sur\n[eV/cm²/ΔeV/ster/s]', seg2, boundaries2_adj, particle_type='ele')
+        plot_flux(axs[2,1], seg2, boundaries2_adj, flux_key='flux_ion', title='Flujo Integrado de Iones - Sur [eV/cm²/ster/s]', particle_type='ion')
+        plot_flux(axs[3,1], seg2, boundaries2_adj, flux_key='flux_ele', title='Flujo Integrado de Electrones - Sur [eV/cm²/ster/s]', particle_type='ele')
     else:
         for i in range(4):
             axs[i,1].text(0.5, 0.5, 'Segmento Sur vacío', transform=axs[i,1].transAxes, 
@@ -314,8 +342,9 @@ def plot_polar_cycle(seg1, seg2, boundaries1, boundaries2,
                            subplot_kw=dict(projection='polar'),
                            constrained_layout=True)
 
-    def plot_polar_spectrogram(ax, spec, title, segment, boundaries):
-        """CORRECCIÓN COMPLETA: Dimensiones compatibles para pcolormesh"""
+    def plot_polar_spectrogram(ax, spec, title, segment, boundaries, particle_type='both'):
+        """CORRECCIÓN COMPLETA: Dimensiones compatibles para pcolormesh
+        particle_type: 'ion', 'ele' o 'both' para filtrar fronteras"""
         if len(segment['time']) == 0:
             ax.text(0.5, 0.5, 'Sin datos', transform=ax.transAxes, ha='center', va='center', fontsize=12)
             ax.set_title(title, pad=20)
@@ -356,13 +385,26 @@ def plot_polar_cycle(seg1, seg2, boundaries1, boundaries2,
             ax.set_theta_direction(-1)
             ax.grid(True, alpha=0.3)
 
+            # Función auxiliar para filtrar fronteras según tipo de partícula
+            def should_show_boundary(boundary_name, p_type):
+                if p_type == 'both':
+                    return True
+                elif p_type == 'ion':
+                    # Mostrar solo fronteras de iones (sufijo 'i')
+                    return boundary_name.endswith('i') or boundary_name in ['b4s', 'b3a', 'b3b', 'b6']
+                elif p_type == 'ele':
+                    # Mostrar solo fronteras de electrones (sufijo 'e')
+                    return boundary_name.endswith('e') or boundary_name in ['b4s', 'b3a', 'b3b', 'b6']
+                return False
+
             # Añadir líneas para las fronteras usando los centros angulares
             for b_name, b_data in boundaries.items():
-                if (b_data is not None and b_data['index'] is not None and 
-                    b_data['index'] < n_time):
-                    b_theta = theta_centers[b_data['index']]
-                    ax.axvline(b_theta, color=boundary_colors.get(b_name, 'gray'), 
-                              linestyle='--', linewidth=2.0, alpha=0.8)
+                if should_show_boundary(b_name, particle_type):
+                    if (b_data is not None and b_data['index'] is not None and 
+                        b_data['index'] < n_time):
+                        b_theta = theta_centers[b_data['index']]
+                        ax.axvline(b_theta, color=boundary_colors.get(b_name, 'gray'), 
+                                  linestyle='--', linewidth=2.0, alpha=0.8)
 
             # Añadir barra de color
             if 'im' in locals():
@@ -373,8 +415,9 @@ def plot_polar_cycle(seg1, seg2, boundaries1, boundaries2,
                    ha='center', va='center', fontsize=10)
             ax.set_title(title, pad=20)
 
-    def plot_polar_flux(ax, segment, boundaries, flux_key, title):
-        """Función para graficar flujos en coordenadas polares - MANTENIDO"""
+    def plot_polar_flux(ax, segment, boundaries, flux_key, title, particle_type='both'):
+        """Grafica flujos en coordenadas polares: MLT (ángulo) vs LAT (radio) con flujo integrado (color)
+        particle_type: 'ion', 'ele' o 'both' para filtrar fronteras"""
         if len(segment['time']) == 0:
             ax.text(0.5, 0.5, 'Sin datos', transform=ax.transAxes, ha='center', va='center', fontsize=12)
             ax.set_title(title, pad=20)
@@ -386,54 +429,106 @@ def plot_polar_cycle(seg1, seg2, boundaries1, boundaries2,
             return
 
         try:
-            times = segment['time']
-            flux = segment[flux_key]
+            # Verificar si tenemos MLT y LAT disponibles
+            if 'mlt' not in segment or len(segment['mlt']) == 0:
+                ax.text(0.5, 0.5, 'No hay datos de MLT disponibles', transform=ax.transAxes, ha='center', va='center', fontsize=12)
+                ax.set_title(title, pad=20)
+                return
+            
+            if 'lat' not in segment or len(segment['lat']) == 0:
+                ax.text(0.5, 0.5, 'No hay datos de LAT disponibles', transform=ax.transAxes, ha='center', va='center', fontsize=12)
+                ax.set_title(title, pad=20)
+                return
 
-            # Número temporal
-            n_time = len(times)
+            mlt = np.asarray(segment['mlt'])
+            lat = np.asarray(segment['lat'])
+            flux = np.asarray(segment[flux_key])
 
-            # Bordes y centros angulares (coherentes con espectrograma)
-            theta_edges = np.linspace(0, 2 * np.pi, n_time + 1, endpoint=True)
-            theta_centers = 0.5 * (theta_edges[:-1] + theta_edges[1:])
+            # Convertir MLT (0-24 horas) a ángulo (radianes: 0-2π)
+            # 0 MLT = norte (π/2), 6 MLT = dusk (π), 12 MLT = sur (3π/2), 18 MLT = dawn (0)
+            theta = (mlt / 24.0) * 2 * np.pi
+            
+            # Normalizar LAT para usarlo como radio
+            # Los valores van típicamente de -90 a 90, normalizamos a 0-1
+            lat_clean = np.nan_to_num(lat, nan=0.0)
+            lat_normalized = (lat_clean + 90) / 180.0  # Rango [0, 1]
+            lat_normalized = np.clip(lat_normalized, 0.01, 1.0)  # Mínimo radio para visualización
+            
+            # Normalizar el flujo para el color
+            flux_clean = np.nan_to_num(flux, nan=1e-15)
+            flux_clean = np.maximum(flux_clean, 1e-15)
+            
+            # Usar escala logarítmica para el flujo
+            flux_log = np.log10(flux_clean)
+            
+            # Normalizar el flujo logarítmico para colormap
+            flux_min = np.percentile(flux_log[flux_log > -np.inf], 5) if np.any(flux_log > -np.inf) else -10
+            flux_max = np.percentile(flux_log[flux_log > -np.inf], 95) if np.any(flux_log > -np.inf) else 0
+            flux_normalized = (flux_log - flux_min) / (flux_max - flux_min + 1e-10)
+            flux_normalized = np.clip(flux_normalized, 0, 1)
 
-            # Normalizar el flujo para el radio (0..1)
-            flux_clean = np.nan_to_num(flux, nan=-10)
-            flux_pos = np.maximum(flux_clean, -9)
-            if np.max(flux_pos) > np.min(flux_pos):
-                flux_normalized = 0.1 + 0.8 * (flux_pos - np.min(flux_pos)) / (np.max(flux_pos) - np.min(flux_pos))
-            else:
-                flux_normalized = np.ones_like(flux_pos) * 0.5
-
-            # Graficar flujo polar usando los centros angulares
-            ax.plot(theta_centers, flux_normalized, 'b-', linewidth=2, label='Flujo')
-            ax.fill_between(theta_centers, 0.1, flux_normalized, alpha=0.3, color='blue')
+            # Graficar scatter plot en coordenadas polares con color = flujo
+            scatter = ax.scatter(theta, lat_normalized, c=flux_normalized, s=100, cmap='viridis', 
+                               alpha=0.7, edgecolors='black', linewidth=0.5)
+            
+            # Añadir barra de color
+            cbar = plt.colorbar(scatter, ax=ax, pad=0.1, shrink=0.8)
+            cbar.set_label('Flujo Integrado (log)', rotation=270, labelpad=20, fontsize=9)
 
             ax.set_title(title, pad=20)
             ax.grid(True, alpha=0.3)
+            ax.set_ylim(0, 1.0)
 
-            # Añadir líneas para las fronteras usando los mismos centros
+            # Configurar etiquetas radiales como latitudes
+            ax.set_rgrids([0.25, 0.5, 0.75, 1.0], labels=['65°', '45°', '25°', '90°'], fontsize=9)
+            
+            # Configurar etiquetas angulares como MLT
+            ax.set_xticks(np.linspace(0, 2*np.pi, 24, endpoint=False))
+            ax.set_xticklabels([f'{i:02d}' for i in range(24)], fontsize=8)
+            ax.set_xlabel('MLT', fontsize=10, labelpad=30)
+
+            # Añadir líneas para las fronteras
+            # Función auxiliar para filtrar fronteras según tipo de partícula
+            def should_show_boundary(boundary_name, p_type):
+                if p_type == 'both':
+                    return True
+                elif p_type == 'ion':
+                    # Mostrar solo fronteras de iones (sufijo 'i')
+                    return boundary_name.endswith('i') or boundary_name in ['b4s', 'b3a', 'b3b', 'b6']
+                elif p_type == 'ele':
+                    # Mostrar solo fronteras de electrones (sufijo 'e')
+                    return boundary_name.endswith('e') or boundary_name in ['b4s', 'b3a', 'b3b', 'b6']
+                return False
+            
             for b_name, b_data in boundaries.items():
-                if (b_data is not None and b_data['index'] is not None and 
-                    b_data['index'] < n_time):
-                    b_theta = theta_centers[b_data['index']]
-                    ax.axvline(b_theta, color=boundary_colors.get(b_name, 'gray'),
-                              linestyle='--', linewidth=2.0, alpha=0.8, label=b_name)
+                if should_show_boundary(b_name, particle_type):
+                    if (b_data is not None and b_data.get('index') is not None):
+                        b_index = b_data['index']
+                        if b_index < len(theta):
+                            b_theta = theta[b_index]
+                            b_lat = lat_normalized[b_index]
+                            # Marcar la frontera con una línea radial
+                            ax.plot([b_theta, b_theta], [0, b_lat], 
+                                   color=boundary_colors.get(b_name, 'gray'),
+                                   linestyle='--', linewidth=2.0, alpha=0.8, label=b_name)
 
             # Configurar polar
             ax.set_theta_zero_location("N")
             ax.set_theta_direction(-1)
-            ax.set_ylim(0, 1)
             
         except Exception as e:
-            ax.text(0.5, 0.5, f'Error: {str(e)}', transform=ax.transAxes, ha='center', va='center', fontsize=10)
+            import traceback
+            print(f"Error en plot_polar_flux: {e}")
+            traceback.print_exc()
+            ax.text(0.5, 0.5, f'Error: {str(e)[:50]}', transform=ax.transAxes, ha='center', va='center', fontsize=10)
             ax.set_title(title, pad=20)
 
     # --- Segmento 1 (Norte) ---
     if not seg1_empty:
-        plot_polar_spectrogram(axs[0,0], spec1_ion, 'Espectrograma Iones - Seg1 (Norte) - Polar', seg1, boundaries1)
-        plot_polar_spectrogram(axs[1,0], spec1_ele, 'Espectrograma Electrones - Seg1 (Norte) - Polar', seg1, boundaries1)
-        plot_polar_flux(axs[2,0], seg1, boundaries1, flux_key='flux_ion', title='Flujo Iones - Seg1 (Norte) - Polar')
-        plot_polar_flux(axs[3,0], seg1, boundaries1, flux_key='flux_ele', title='Flujo Electrones - Seg1 (Norte) - Polar')
+        plot_polar_spectrogram(axs[0,0], spec1_ion, 'Espectrograma Iones - Seg1 (Norte) - Polar', seg1, boundaries1, particle_type='ion')
+        plot_polar_spectrogram(axs[1,0], spec1_ele, 'Espectrograma Electrones - Seg1 (Norte) - Polar', seg1, boundaries1, particle_type='ele')
+        plot_polar_flux(axs[2,0], seg1, boundaries1, flux_key='flux_ion', title='Flujo Iones - Seg1 (Norte) - Polar', particle_type='ion')
+        plot_polar_flux(axs[3,0], seg1, boundaries1, flux_key='flux_ele', title='Flujo Electrones - Seg1 (Norte) - Polar', particle_type='ele')
     else:
         for i in range(4):
             axs[i,0].text(0.5, 0.5, 'Segmento Norte vacío', transform=axs[i,0].transAxes, 
@@ -442,10 +537,10 @@ def plot_polar_cycle(seg1, seg2, boundaries1, boundaries2,
 
     # --- Segmento 2 (Sur) ---
     if not unidad and seg2 is not None and not seg2_empty:
-        plot_polar_spectrogram(axs[0,1], spec2_ion, 'Espectrograma Iones - Seg2 (Sur) - Polar', seg2, boundaries2_adj)
-        plot_polar_spectrogram(axs[1,1], spec2_ele, 'Espectrograma Electrones - Seg2 (Sur) - Polar', seg2, boundaries2_adj)
-        plot_polar_flux(axs[2,1], seg2, boundaries2_adj, flux_key='flux_ion', title='Flujo Iones - Seg2 (Sur) - Polar')
-        plot_polar_flux(axs[3,1], seg2, boundaries2_adj, flux_key='flux_ele', title='Flujo Electrones - Seg2 (Sur) - Polar')
+        plot_polar_spectrogram(axs[0,1], spec2_ion, 'Espectrograma Iones - Seg2 (Sur) - Polar', seg2, boundaries2_adj, particle_type='ion')
+        plot_polar_spectrogram(axs[1,1], spec2_ele, 'Espectrograma Electrones - Seg2 (Sur) - Polar', seg2, boundaries2_adj, particle_type='ele')
+        plot_polar_flux(axs[2,1], seg2, boundaries2_adj, flux_key='flux_ion', title='Flujo Iones - Seg2 (Sur) - Polar', particle_type='ion')
+        plot_polar_flux(axs[3,1], seg2, boundaries2_adj, flux_key='flux_ele', title='Flujo Electrones - Seg2 (Sur) - Polar', particle_type='ele')
     else:
         for i in range(4):
             axs[i,1].text(0.5, 0.5, 'Segmento Sur vacío', transform=axs[i,1].transAxes, 

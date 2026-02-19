@@ -10,10 +10,13 @@ from datetime import datetime
 # Importar módulo de funciones (asegúrate de que funciones.py esté en el mismo directorio)
 try:
     import funciones as ov
+    # Importar funciones de limpieza de log
+    from funciones.clean_log_values import clean_negative_log_values
 except ImportError as e:
     print(f"Error importando funciones: {e}")
     # Crear funciones básicas si no existe el módulo
     ov = None
+    clean_negative_log_values = None
 
 def procesar_datos_dmsp(archivo_cdf, directorio_salida="results"):
     """
@@ -46,8 +49,8 @@ def procesar_datos_dmsp(archivo_cdf, directorio_salida="results"):
         # 1. Cargar datos
         datos = ov.cargar_datos_cdf(archivo_cdf)
         tiempo_final = datos["tiempo_final"]
-        ele_total_energy = datos["ELE_TOTAL_ENERGY_FLUX"]  
-        CHANNEL_ENERGIES = datos["CHANNEL_ENERGIES"]
+        ele_total_energy = datos["ELE_TOTAL_ENERGY_FLUX"]  # [eV/cm²/ster/s]
+        CHANNEL_ENERGIES = datos["CHANNEL_ENERGIES"]  # [eV]
         tiempo_final_dict = {t: i for i, t in enumerate(tiempo_final)}
         
         # 2. Calcular energía promedio de electrones si no existe
@@ -63,6 +66,8 @@ def procesar_datos_dmsp(archivo_cdf, directorio_salida="results"):
             datos['ELE_AVG_ENERGY'] = ele_avg_energy
         
         # 3. Filtrar canales (pero MANTENER ESPECTROS DIFERENCIALES)
+        # Los datos filtrados mantienen las unidades originales:
+        # delta es [eV], ELE_DIFF_ESPECTROS es [eV/cm²/ΔeV/ster/s], ION_DIFF_ESPECTROS es [eV/cm²/ΔeV/ster/s]
         CHANNEL_ENERGIES_f, ELE_DIFF_ESPECTROS, ION_DIFF_ESPECTROS, delta = ov.filtrar_canales(
             datos['CHANNEL_ENERGIES'],
             datos['ELE_DIFF_ENERGY_FLUX'],
@@ -73,6 +78,7 @@ def procesar_datos_dmsp(archivo_cdf, directorio_salida="results"):
 
         # 4. Calcular flujos integrados ESPECÍFICOS
         # Para b2i: iones 3-30 keV (canales 0-6 en orden descendente)
+        # Resultado: [eV/cm²/ster/s] (se integra sobre energía multiplicando por delta)
         flujos_iones_b2i = ov.integrar_flujo_diferencial(
             ION_DIFF_ESPECTROS,
             delta,
@@ -81,6 +87,7 @@ def procesar_datos_dmsp(archivo_cdf, directorio_salida="results"):
         )
 
         # Flujos totales para visualización y algunas fronteras
+        # Resultado: [eV/cm²/ster/s] (integración en todo el rango de energía)
         flujos_elec_totales = ov.integrar_flujo_diferencial(
             ELE_DIFF_ESPECTROS,
             delta,
@@ -88,6 +95,7 @@ def procesar_datos_dmsp(archivo_cdf, directorio_salida="results"):
             canal2=19    # 30 eV (todo el rango)
         )
 
+        # Resultado: [eV/cm²/ster/s] (integración en todo el rango de energía)
         flujos_iones_totales = ov.integrar_flujo_diferencial(
             ION_DIFF_ESPECTROS,
             delta, 
@@ -96,9 +104,17 @@ def procesar_datos_dmsp(archivo_cdf, directorio_salida="results"):
         )
 
         # Convertir a escala logarítmica solo para visualización
+        # log10(flujo [eV/cm²/ster/s]) sin unidad específica pero comparable
         flujos_iones_log = np.log10(flujos_iones_totales + 1e-10)
         flujos_elec_log = np.log10(flujos_elec_totales + 1e-10)
         flujos_iones_b2i_log = np.log10(flujos_iones_b2i + 1e-10)
+        
+        # ✨ LIMPIEZA AUTOMÁTICA: Reemplazar valores negativos (log < 0) con NaN
+        # Esto mejora la visualización eliminando datos muy débiles (flujo < 1 eV/cm²/ster/s)
+        if clean_negative_log_values is not None:
+            flujos_iones_log = clean_negative_log_values(flujos_iones_log, replace_with_nan=True, threshold=0.0)
+            flujos_elec_log = clean_negative_log_values(flujos_elec_log, replace_with_nan=True, threshold=0.0)
+            flujos_iones_b2i_log = clean_negative_log_values(flujos_iones_b2i_log, replace_with_nan=True, threshold=0.0)
 
         # 5. Separar por latitud
         adjust_SC_AACGM_LAT, adjust_tiempo_final, other_SC_AACGM_LAT, other_tiempo_final, transitions = ov.separar_por_latitud(
@@ -133,6 +149,8 @@ def procesar_datos_dmsp(archivo_cdf, directorio_salida="results"):
                 tiempo_final_dict,
                 datos['SC_AACGM_LAT'],
                 datos['SC_GEOCENTRIC_LAT'],
+                datos['SC_AACGM_LON'],
+                datos['tiempo'],
                 flujos_iones_log,
                 flujos_elec_log,
                 flujos_iones_b2i_log,
