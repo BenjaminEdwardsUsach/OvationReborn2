@@ -1,4 +1,7 @@
 # thresholds.py - UMBRALES EXACTOS DEL PAPER NEWELL ET AL. (1996)
+# NOTA: Los valores están en escala log10 de flujo energético en eV/cm²/ster/s
+#       Para convertir a erg/cm²/s/sr: restar log10(6.242e11) ≈ 11.795
+#       Ejemplo: log10(eV) = 10.5 → log10(erg) = 10.5 - 11.795 = -1.295 → 0.05 erg/cm²/s/sr
 PAPER_THRESHOLDS = {
     'b1e': {
         'min_jump': 2.0,           # Factor de salto mínimo normal

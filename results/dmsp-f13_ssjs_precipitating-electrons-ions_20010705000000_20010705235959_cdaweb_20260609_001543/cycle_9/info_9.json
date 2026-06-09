@@ -1,0 +1,145 @@
+{
+    "boundaries": {
+        "primera_mitad": {
+            "b1e": {
+                "index": 1937,
+                "time": "2001-07-05T15:42:11.000000000",
+                "lat": -78.33634811251562,
+                "deviation": 0,
+                "params": {}
+            },
+            "b1i": {
+                "index": null,
+                "time": null,
+                "lat": null,
+                "deviation": 0
+            },
+            "b2e": {
+                "index": 1880,
+                "time": "2001-07-05T15:41:14.000000000",
+                "lat": -75.9343599265853,
+                "deviation": 0,
+                "params": {}
+            },
+            "b2i": {
+                "index": null,
+                "time": null,
+                "lat": null,
+                "deviation": 0
+            },
+            "b3a": {
+                "index": 2001,
+                "time": "2001-07-05T15:43:15.000000000",
+                "lat": -80.34525729890339,
+                "deviation": 0,
+                "params": {}
+            },
+            "b3b": {
+                "index": 2,
+                "time": "2001-07-05T15:09:56.000000000",
+                "lat": 31.159588201146786,
+                "deviation": 0,
+                "params": {}
+            },
+            "b4s": {
+                "index": 1873,
+                "time": "2001-07-05T15:41:07.000000000",
+                "lat": -75.61358752747842,
+                "deviation": 0,
+                "params": {}
+            },
+            "b5e": {
+                "index": null,
+                "time": null,
+                "lat": null,
+                "deviation": 0
+            },
+            "b5i": {
+                "index": null,
+                "time": null,
+                "lat": null,
+                "deviation": 0
+            },
+            "b6": {
+                "index": null,
+                "time": null,
+                "lat": null,
+                "deviation": 0
+            }
+        },
+        "segunda_mitad": {
+            "b1e": {
+                "index": 8,
+                "time": "2001-07-05T15:44:29.000000000",
+                "lat": -81.12760170041605,
+                "deviation": 0,
+                "params": {}
+            },
+            "b1i": {
+                "index": null,
+                "time": null,
+                "lat": null,
+                "deviation": 0
+            },
+            "b2e": {
+                "index": 19,
+                "time": "2001-07-05T15:44:40.000000000",
+                "lat": -81.06853141837324,
+                "deviation": 0,
+                "params": {}
+            },
+            "b2i": {
+                "index": null,
+                "time": null,
+                "lat": null,
+                "deviation": 0
+            },
+            "b3a": {
+                "index": 77,
+                "time": "2001-07-05T15:45:38.000000000",
+                "lat": -80.0482096656798,
+                "deviation": 0,
+                "params": {}
+            },
+            "b3b": {
+                "index": 1055,
+                "time": "2001-07-05T16:01:56.000000000",
+                "lat": -27.5907610365394,
+                "deviation": 0,
+                "params": {}
+            },
+            "b4s": {
+                "index": 284,
+                "time": "2001-07-05T15:49:05.000000000",
+                "lat": -71.13628017902667,
+                "deviation": 0,
+                "params": {}
+            },
+            "b5e": {
+                "index": null,
+                "time": null,
+                "lat": null,
+                "deviation": 0
+            },
+            "b5i": {
+                "index": null,
+                "time": null,
+                "lat": null,
+                "deviation": 0
+            },
+            "b6": {
+                "index": null,
+                "time": null,
+                "lat": null,
+                "deviation": 0
+            }
+        }
+    },
+    "direccion_original": "polo-ecuador",
+    "segment_info": {
+        "seg1_processing_direction": "ecuador-polo",
+        "seg2_processing_direction": "ecuador-polo",
+        "seg1_original_direction": "polo-ecuador",
+        "seg2_original_direction": "ecuador-polo"
+    }
+}

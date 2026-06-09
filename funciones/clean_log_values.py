@@ -6,6 +6,7 @@ reemplazando valores negativos con NaN o aplicando umbrales.
 """
 
 import numpy as np
+from .logger import logger
 
 
 def clean_negative_log_values(log_values, replace_with_nan=True, threshold=0.0):
@@ -119,23 +120,23 @@ def print_cleaning_report(original_log, cleaned_log, name="Flujo"):
     """
     stats = get_statistics_before_after(original_log, cleaned_log)
     
-    print(f"\n{'='*60}")
-    print(f"REPORTE DE LIMPIEZA - {name}")
-    print(f"{'='*60}")
-    print(f"\nDATOS ORIGINALES (escala logarítmica):")
-    print(f"  • Total de valores: {stats['original_total_values']:,}")
-    print(f"  • Valores negativos: {stats['original_negative_values']:,} ({stats['percentage_negative']:.2f}%)")
-    print(f"  • Rango: [{stats['original_min']:.2f}, {stats['original_max']:.2f}]")
+    logger.info(f"\n{'='*60}")
+    logger.info(f"REPORTE DE LIMPIEZA - {name}")
+    logger.info(f"{'='*60}")
+    logger.info(f"\nDATOS ORIGINALES (escala logarítmica):")
+    logger.info(f"  • Total de valores: {stats['original_total_values']:,}")
+    logger.info(f"  • Valores negativos: {stats['original_negative_values']:,} ({stats['percentage_negative']:.2f}%)")
+    logger.info(f"  • Rango: [{stats['original_min']:.2f}, {stats['original_max']:.2f}]")
     
-    print(f"\nDATOS DESPUÉS DE LIMPIEZA:")
-    print(f"  • Valores válidos: {stats['cleaned_valid_values']:,}")
-    print(f"  • Valores NaN: {stats['cleaned_nan_values']:,}")
-    print(f"  • Rango: [{stats['cleaned_min']:.2f}, {stats['cleaned_max']:.2f}]")
+    logger.info(f"\nDATOS DESPUÉS DE LIMPIEZA:")
+    logger.info(f"  • Valores válidos: {stats['cleaned_valid_values']:,}")
+    logger.info(f"  • Valores NaN: {stats['cleaned_nan_values']:,}")
+    logger.info(f"  • Rango: [{stats['cleaned_min']:.2f}, {stats['cleaned_max']:.2f}]")
     
-    print(f"\nINTERPRETACIÓN:")
-    print(f"  • Valores log < 0 → Flujo < 1 eV/cm²/ster/s (excluidos de visualización)")
-    print(f"  • Valores log ≥ 0 → Flujo ≥ 1 eV/cm²/ster/s (mostrados)")
-    print(f"{'='*60}\n")
+    logger.info(f"\nINTERPRETACIÓN:")
+    logger.info(f"  • Valores log < 0 → Flujo < 1 eV/cm²/ster/s (excluidos de visualización)")
+    logger.info(f"  • Valores log ≥ 0 → Flujo ≥ 1 eV/cm²/ster/s (mostrados)")
+    logger.info(f"{'='*60}\n")
 
 
 # Valores de referencia para interpretar escala logarítmica
@@ -155,12 +156,12 @@ LOG_SCALE_REFERENCE = {
 
 def print_log_scale_reference():
     """Imprime una tabla de referencia para interpretar valores en escala logarítmica."""
-    print(f"\n{'='*70}")
-    print("TABLA DE REFERENCIA - ESCALA LOGARÍTMICA")
-    print(f"{'='*70}")
-    print(f"\nDefinición: {LOG_SCALE_REFERENCE['log']}\n")
+    logger.info(f"\n{'='*70}")
+    logger.info("TABLA DE REFERENCIA - ESCALA LOGARÍTMICA")
+    logger.info(f"{'='*70}")
+    logger.info(f"\nDefinición: {LOG_SCALE_REFERENCE['log']}\n")
     
     for log_val, flujo_desc in LOG_SCALE_REFERENCE['references']:
-        print(f"  {log_val:15} → {flujo_desc}")
+        logger.info(f"  {log_val:15} → {flujo_desc}")
     
-    print(f"\n{'='*70}\n")
+    logger.info(f"\n{'='*70}\n")

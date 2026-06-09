@@ -4,6 +4,7 @@ from .segment_utils import split_cycle_segment
 from .io_utils import save_cycle_info
 from .plot_utils import plot_cycle, plot_polar_cycle
 from .boundary_detection import detect_all_boundaries
+from .logger import logger
 
 def procesar_ciclos(pares_extremos, tiempo_final, tiempo_final_dict, sc_lat, sc_geo, sc_aacgm_lon, tiempo_epoch,
                     flujos_iones_log, flujos_elec_log, flujos_iones_b2i_log,
@@ -79,30 +80,22 @@ def procesar_ciclos(pares_extremos, tiempo_final, tiempo_final_dict, sc_lat, sc_
                         # Calcular UT (hora universal) en horas desde epoch
                         tiempo_segment = np.asarray(segment['time'])
                         
-                        # Convertir tiempos a horas UT
-                        ut_hours = np.zeros(len(tiempo_segment))
-                        
-                        for i, t in enumerate(tiempo_segment):
-                            try:
-                                # Intentar convertir a datetime
-                                if isinstance(t, np.datetime64):
-                                    # Convertir numpy.datetime64 a datetime de Python
-                                    ts = (t - np.datetime64(0, 's')).astype(int)
-                                    dt_obj = __import__('datetime').datetime.utcfromtimestamp(ts)
-                                else:
-                                    # Si es ya un datetime, usarlo directamente
-                                    dt_obj = t if hasattr(t, 'hour') else __import__('datetime').datetime(1970, 1, 1)
-                                
-                                ut_hours[i] = float(dt_obj.hour) + float(dt_obj.minute)/60.0 + float(dt_obj.second)/3600.0
-                            except:
-                                ut_hours[i] = 0.0
+
+                        # Convertir a datetime64[us] para precisión
+                        tiempo_dt64 = np.asarray(tiempo_segment, dtype='datetime64[us]')
+                        # Obtener segundos desde medianoche (asumiendo que los tiempos son del mismo día)
+                        # Mejor: calcular hora UT como fracción de día
+                        epoch = np.datetime64('1970-01-01T00:00:00')
+                        seconds_since_epoch = (tiempo_dt64 - epoch).astype(int) / 1e6  # en segundos
+                        # Calcular horas del día (UT)
+                        ut_hours = (seconds_since_epoch % 86400) / 3600.0
                         
                         # MLT = (UT + AACGM_LON/15) mod 24
                         mlt = np.mod(ut_hours + aacgm_lon / 15.0, 24.0)
                         segment_data['mlt'] = mlt
                         segment_data['aacgm_lon'] = aacgm_lon
                 except Exception as e:
-                    print(f"Error calculando MLT: {e}")
+                    logger.warning(f"Error calculando MLT: {e}")
                     import traceback
                     traceback.print_exc()
                     segment_data['mlt'] = np.array([])
@@ -125,7 +118,7 @@ def procesar_ciclos(pares_extremos, tiempo_final, tiempo_final_dict, sc_lat, sc_
                             'ele_avg_energy': global_data['ele_avg_energy'][valid_indices] if len(valid_indices) > 0 else np.array([])
                         })
                     except Exception as e:
-                        print(f"Error preparando datos del segmento {segment_type}: {e}")
+                        logger.warning(f"Error preparando datos del segmento {segment_type}: {e}")
                         return create_empty_segment_data(segment_type)
                 
                 return segment_data
@@ -165,14 +158,14 @@ def procesar_ciclos(pares_extremos, tiempo_final, tiempo_final_dict, sc_lat, sc_
                 if len(seg1_processing_data['time']) > 0:
                     boundaries_seg1 = detect_all_boundaries(seg1_processing_data, channel_energies, fronteras=fronteras)
             except Exception as e:
-                print(f"Error detectando fronteras en segmento 1 del ciclo {idx}: {e}")
+                logger.warning(f"Error detectando fronteras en segmento 1 del ciclo {idx}: {e}")
                 boundaries_seg1 = {}
                 
             try:
                 if len(seg2_processing_data['time']) > 0:
                     boundaries_seg2 = detect_all_boundaries(seg2_processing_data, channel_energies, fronteras=fronteras)
             except Exception as e:
-                print(f"Error detectando fronteras en segmento 2 del ciclo {idx}: {e}")
+                logger.warning(f"Error detectando fronteras en segmento 2 del ciclo {idx}: {e}")
                 boundaries_seg2 = {}
 
             # 4) Ajustar índices de fronteras
@@ -205,7 +198,7 @@ def procesar_ciclos(pares_extremos, tiempo_final, tiempo_final_dict, sc_lat, sc_
                                 'params': b_data.get('params', {})
                             }
                         except Exception as e:
-                            print(f"Error ajustando índice para {b_name}: {e}")
+                            logger.warning(f"Error ajustando índice para {b_name}: {e}")
                             adjusted[b_name] = None
                     else:
                         adjusted[b_name] = b_data
@@ -253,7 +246,7 @@ def procesar_ciclos(pares_extremos, tiempo_final, tiempo_final_dict, sc_lat, sc_
                         return spec_ion, spec_ele
                         
                     except Exception as e:
-                        print(f"Error preparando espectrogramas: {e}")
+                        logger.warning(f"Error preparando espectrogramas: {e}")
                         return np.array([]), np.array([])
                 else:
                     return np.array([]), np.array([])
@@ -275,7 +268,7 @@ def procesar_ciclos(pares_extremos, tiempo_final, tiempo_final_dict, sc_lat, sc_
                     idx
                 )
             except Exception as e:
-                print(f"Error generando gráfico normal del ciclo {idx}: {e}")
+                logger.warning(f"Error generando gráfico normal del ciclo {idx}: {e}")
 
             # GENERAR GRÁFICO POLAR
             try:
@@ -292,8 +285,8 @@ def procesar_ciclos(pares_extremos, tiempo_final, tiempo_final_dict, sc_lat, sc_
                 )
 
             except Exception as e:
-                print(f"Error generando gráfico POLAR del ciclo {idx}: {e}")
+                logger.warning(f"Error generando gráfico POLAR del ciclo {idx}: {e}")
             
         except Exception as e:
-            print(f"Error procesando ciclo {idx}: {e}")
+            logger.warning(f"Error procesando ciclo {idx}: {e}")
             continue

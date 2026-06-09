@@ -1,19 +1,5 @@
 import numpy as np
-
-def validate_segment_data(segment, required_keys):
-    """Función de validación consistente con otros scripts"""
-    for key in required_keys:
-        if key not in segment:
-            return False, f"Falta clave: {key}"
-        if segment[key] is None or len(segment[key]) == 0:
-            return False, f"Datos vacíos: {key}"
-    
-    base_length = len(segment['time'])
-    for key in required_keys:
-        if len(segment[key]) != base_length:
-            return False, f"Longitud inconsistente: {key}"
-    
-    return True, "OK"
+from .validators import validate_segment_data
 
 def detect_b3(segment, energy_channels):
     """

@@ -1,0 +1,1460 @@
+! Skeleton table for the "dmsp-f16_ssj_precipitating-electrons-ions_00000000_v01.cdf" CDF.
+! Generated: Thursday, 26-Dec-2024 13:02:35
+! CDF created/modified by CDF V3.9.0
+! Skeleton table created by CDF V3.8.1_0
+
+
+#limitar en 0.25 ev el flujo, seprar por polar, buscar el glat máximo, dividir la lista e invertyir el flujo de esta, introducir ambas, no solo la que pasa y sale de la aurora y arreglar integración de la energía cambiar fecha archivo para concordar con la profe
+
+#header
+
+                       CDF NAME: dmsp-f16_ssj_precipitating-electrons-ions_00000000_v01.cdf
+                  DATA ENCODING: NETWORK
+                       MAJORITY: ROW
+                         FORMAT: SINGLE
+
+! Variables  G.Attributes  V.Attributes  Records  Dims  Sizes
+! ---------  ------------  ------------  -------  ----  -----
+    0/32          29            37         0/z      0
+! CDF_COMPRESSION: None
+! (Valid compression: None, GZIP.1-9, RLE.0, HUFF.0, AHUFF.0)
+! CDF_CHECKSUM: MD5
+! (Valid checksum: None, MD5)
+! CDF_LEAPSECONDLASTUPDATED: 20150701
+
+
+#GLOBALattributes
+
+! Attribute         Entry       Data
+! Name              Number      Type       Value
+! ---------         ------      ----       -----
+
+  "Project"             1:    CDF_CHAR     { "DMSP" } .
+
+  "Source_name"         1:    CDF_CHAR     { "dmsp-f16" } .
+
+  "Discipline"          1:    CDF_CHAR     { "Space " -
+                                             "Physics>Magnetospheric " -
+                                             "Science" }
+                        2:    CDF_CHAR     { "Space Physics>Ionospheric " -
+                                             "Science" } .
+
+  "Data_type"           1:    CDF_CHAR     { "precipitating-electrons-ions" } .
+
+  "Descriptor"          1:    CDF_CHAR     { "ssj" } .
+
+  "File_naming_convention"
+                        1:    CDF_CHAR     { "source_descriptor_datatype" -
+                                             "_yyyyMMdd" } .
+
+  "Data_version"        1:    CDF_CHAR     { "1.0.3" } .
+
+  "PI_name"             1:    CDF_CHAR     { "Staff" } .
+
+  "PI_affiliation"      1:    CDF_CHAR     { "AFRL, NCEI, CU" } .
+
+  "TEXT"                1:    CDF_CHAR     { "Precipitating electrons " -
+                                             "and ions observed at " -
+                                             "nominally 850km altitude " -
+                                             "and over a range of " -
+                                             "energies from 30 eV to 30 " -
+                                             "keV using the Special " -
+                                             "Sensor J (SSJ) instrument." -
+                                             "  Please contact " -
+                                             "Rob.Redmon@noaa.gov with " -
+                                             "questions and comments. " -
+                                             "Many individuals made " -
+                                             "important contributions " -
+                                             "including: D. Hardy, E. " -
+                                             "Holeman, F. Rich, D. Ober," -
+                                             " G. Wilson, J. Machuzak, " -
+                                             "K. Kadinsky-Cade, J. " -
+                                             "McGarity, W.F. Denig, K. " -
+                                             "Martin, R. Redmon, D. " -
+                                             "Knipp, L. Kilcommons." } .
+
+  "Instrument_type"     1:    CDF_CHAR     { "Particles (space)" } .
+
+  "Mission_group"       1:    CDF_CHAR     { "DMSP" } .
+
+  "Logical_source"      1:    CDF_CHAR     { "dmsp-f16_ssj_precipitating" -
+                                             "-electrons-ions" } .
+
+  "Logical_file_id"     1:    CDF_CHAR     { "dmsp-f16_ssj_precipitating" -
+                                             "-electrons-ions_20101222_v" -
+                                             "1.0.3" } .
+
+  "Logical_source_description"
+                        1:    CDF_CHAR     { "Precipitating electrons " -
+                                             "and ions observed at " -
+                                             "nominally 850km." } .
+
+  "Time_resolution"     1:    CDF_CHAR     { "1 second" } .
+
+  "Rules_of_use"        1:    CDF_CHAR     { "Please acknowledge " -
+                                             "providers.  If you find " -
+                                             "problems, please report " -
+                                             "them." } .
+
+  "Generated_by"        1:    CDF_CHAR     { "Rob Redmon" } .
+
+  "Generation_date"     1:    CDF_CHAR     { "Thu May  8 02:21:28 2014" } .
+
+  "Acknowledgement"     1:    CDF_CHAR     { "Data access provided by " -
+                                             "NCEI in coordination with " -
+                                             "AFRL and CU Boulder." } .
+
+  "MODS"                1:    CDF_CHAR     { "This is version 1, beta." } .
+
+  "ADID_ref" .
+
+  "LINK_TEXT"           1:    CDF_CHAR     { "National Centers for " -
+                                             "Environmental Information" } .
+
+  "LINK_TITLE"          1:    CDF_CHAR     { "Satellite Data Services" } .
+
+  "HTTP_LINK"           1:    CDF_CHAR     { "http://www.ngdc.noaa.gov/s" -
+                                             "tp/satellite/satdataservic" -
+                                             "es.html" } .
+
+  "DWELL_TIME"          1:    CDF_CHAR     { " " } .
+
+  "VERSION"             1:    CDF_CHAR     { " 1.0.3" } .
+
+  "spase_DatasetResourceID"
+                        1:    CDF_CHAR     { "spase://NASA/NumericalData" -
+                                             "/DMSP_5D-3/F16/SESS/SSJ5/P" -
+                                             "T1S" } .
+
+  "DOI"                 1:    CDF_CHAR     { "https://doi.org/10.48322/1" -
+                                             "rnz-f067" } .
+
+
+#VARIABLEattributes
+
+  "CATDESC"
+  "DEPEND_0"
+  "DEPEND_1"
+  "DEPEND_2"
+  "DEPEND_3"
+  "DICT_KEY"
+  "DISPLAY_TYPE"
+  "FIELDNAM"
+  "FILLVAL"
+  "FORMAT"
+  "LABLAXIS"
+  "LABL_PTR_1"
+  "LABL_PTR_2"
+  "LABL_PTR_3"
+  "UNITS"
+  "UNIT_PTR"
+  "VALIDMIN"
+  "VALIDMAX"
+  "VAR_TYPE"
+  "SCALETYP"
+  "SCAL_PTR"
+  "VAR_NOTES"
+  "MONOTON"
+  "LEAP_SECONDS_INCLUDED"
+  "RESOLUTION"
+  "Bin_location"
+  "TIME_BASE"
+  "TIME_SCALE"
+  "REFERENCE_POSITION"
+  "ABSOLUTE_ERROR"
+  "RELATIVE_ERROR"
+  "FORM_PTR"
+  "DELTA_PLUS_VAR"
+  "DELTA_MINUS_VAR"
+  "VIRTUAL"
+  "FUNCT"
+  "COMPONENT_0"
+
+
+#variables
+
+! No rVariables.
+
+
+#zVariables
+
+! Variable          Data      Number                 Record   Dimension
+! Name              Type     Elements  Dims  Sizes  Variance  Variances
+! --------          ----     --------  ----  -----  --------  ---------
+
+  "Epoch"         CDF_EPOCH      1       0              T
+
+  ! VAR_COMPRESSION: None
+  ! (Valid compression: None, GZIP.1-9, RLE.0, HUFF.0, AHUFF.0)
+  ! VAR_SPARSERECORDS: None
+  ! (Valid sparserecords: None, sRecords.PAD, sRecords.PREV)
+  ! VAR_PADVALUE: 01-Jan-0000 00:00:00.000
+
+  ! Attribute       Data
+  ! Name            Type       Value
+  ! --------        ----       -----
+
+    "CATDESC"     CDF_CHAR     { "Default time" }
+    "FIELDNAM"    CDF_CHAR     { "Epoch" }
+    "FILLVAL"     CDF_EPOCH    { 31-Dec-9999 23:59:59.999 }
+    "LABLAXIS"    CDF_CHAR     { "Epoch" }
+    "UNITS"       CDF_CHAR     { "ms" }
+    "VALIDMIN"    CDF_EPOCH    { 01-Jan-1990 00:00:00.000 }
+    "VALIDMAX"    CDF_EPOCH    { 31-Dec-2029 23:59:59.999 }
+    "VAR_TYPE"    CDF_CHAR     { "support_data" }
+    "SCALETYP"    CDF_CHAR     { "linear" }
+    "MONOTON"     CDF_CHAR     { "INCREASE" }
+    "TIME_BASE"   CDF_CHAR     { "0 AD" } .
+
+  ! RV values were not requested.
+
+
+! Variable          Data      Number                 Record   Dimension
+! Name              Type     Elements  Dims  Sizes  Variance  Variances
+! --------          ----     --------  ----  -----  --------  ---------
+
+  "CHANNEL_ENERGIES"
+                  CDF_FLOAT      1       1     19       F         T
+
+  ! VAR_COMPRESSION: None
+  ! (Valid compression: None, GZIP.1-9, RLE.0, HUFF.0, AHUFF.0)
+  ! VAR_SPARSERECORDS: None
+  ! (Valid sparserecords: None, sRecords.PAD, sRecords.PREV)
+  ! VAR_PADVALUE: -1.0e+30
+
+  ! Attribute       Data
+  ! Name            Type       Value
+  ! --------        ----       -----
+
+    "CATDESC"     CDF_CHAR     { "Channel center energies (eV)." }
+    "FIELDNAM"    CDF_CHAR     { "CHANNEL_ENERGIES" }
+    "FILLVAL"     CDF_FLOAT    { nan }
+    "FORMAT"      CDF_CHAR     { "E12.2" }
+    "LABLAXIS"    CDF_CHAR     { "CHANNEL_ENERGIES" }
+    "UNITS"       CDF_CHAR     { "eV" }
+    "VALIDMIN"    CDF_FLOAT    { 3.00e+01 }
+    "VALIDMAX"    CDF_FLOAT    { 3.00e+04 }
+    "VAR_TYPE"    CDF_CHAR     { "support_data" }
+    "SCALETYP"    CDF_CHAR     { "log" } .
+
+  ! NRV values follow...
+
+    [1] = 3.00e+04
+    [2] = 2.04e+04
+    [3] = 1.39e+04
+    [4] = 9.45e+03
+    [5] = 6.46e+03
+    [6] = 4.40e+03
+    [7] = 3.00e+03
+    [8] = 2.04e+03
+    [9] = 1.39e+03
+    [10] = 9.49e+02
+    [11] = 6.46e+02
+    [12] = 4.40e+02
+    [13] = 3.00e+02
+    [14] = 2.04e+02
+    [15] = 1.39e+02
+    [16] = 9.50e+01
+    [17] = 6.50e+01
+    [18] = 4.40e+01
+    [19] = 3.00e+01
+
+
+! Variable          Data      Number                 Record   Dimension
+! Name              Type     Elements  Dims  Sizes  Variance  Variances
+! --------          ----     --------  ----  -----  --------  ---------
+
+  "ELE_COUNTS_OBS"
+                  CDF_FLOAT      1       1     19       T         T
+
+  ! VAR_COMPRESSION: GZIP.6
+  ! (Valid compression: None, GZIP.1-9, RLE.0, HUFF.0, AHUFF.0)
+  ! VAR_SPARSERECORDS: None
+  ! (Valid sparserecords: None, sRecords.PAD, sRecords.PREV)
+  ! VAR_BLOCKINGFACTOR: 432
+  ! VAR_PADVALUE: -1.0e+30
+
+  ! Attribute       Data
+  ! Name            Type       Value
+  ! --------        ----       -----
+
+    "CATDESC"     CDF_CHAR     { "Electrons 30eV-30keV:  Electron counts" -
+                                 " as observed; no corrections." }
+    "DEPEND_0"    CDF_CHAR     { "Epoch" }
+    "DEPEND_1"    CDF_CHAR     { "CHANNEL_ENERGIES" }
+    "DISPLAY_TYPE"
+                  CDF_CHAR     { "spectrogram" }
+    "FIELDNAM"    CDF_CHAR     { "ELE_COUNTS_OBS" }
+    "FILLVAL"     CDF_FLOAT    { nan }
+    "FORMAT"      CDF_CHAR     { "E12.2" }
+    "LABLAXIS"    CDF_CHAR     { "Ele_Counts" }
+    "UNITS"       CDF_CHAR     { " " }
+    "VALIDMIN"    CDF_FLOAT    { 0.00e+00 }
+    "VALIDMAX"    CDF_FLOAT    { 2.06e+06 }
+    "VAR_TYPE"    CDF_CHAR     { "data" }
+    "SCALETYP"    CDF_CHAR     { "log" } .
+
+  ! RV values were not requested.
+
+
+! Variable          Data      Number                 Record   Dimension
+! Name              Type     Elements  Dims  Sizes  Variance  Variances
+! --------          ----     --------  ----  -----  --------  ---------
+
+  "ELE_COUNTS_BKG"
+                  CDF_FLOAT      1       1     19       T         T
+
+  ! VAR_COMPRESSION: GZIP.6
+  ! (Valid compression: None, GZIP.1-9, RLE.0, HUFF.0, AHUFF.0)
+  ! VAR_SPARSERECORDS: None
+  ! (Valid sparserecords: None, sRecords.PAD, sRecords.PREV)
+  ! VAR_BLOCKINGFACTOR: 432
+  ! VAR_PADVALUE: -1.0e+30
+
+  ! Attribute       Data
+  ! Name            Type       Value
+  ! --------        ----       -----
+
+    "CATDESC"     CDF_CHAR     { "-----> Background electron count " -
+                                 "estimate." }
+    "DEPEND_0"    CDF_CHAR     { "Epoch" }
+    "DEPEND_1"    CDF_CHAR     { "CHANNEL_ENERGIES" }
+    "DISPLAY_TYPE"
+                  CDF_CHAR     { "spectrogram" }
+    "FIELDNAM"    CDF_CHAR     { "ELE_COUNTS_BKG" }
+    "FILLVAL"     CDF_FLOAT    { nan }
+    "FORMAT"      CDF_CHAR     { "E12.2" }
+    "LABLAXIS"    CDF_CHAR     { "Ele_Backgrnd_Counts" }
+    "UNITS"       CDF_CHAR     { " " }
+    "VALIDMIN"    CDF_FLOAT    { -2.06e+06 }
+    "VALIDMAX"    CDF_FLOAT    { 2.06e+06 }
+    "VAR_TYPE"    CDF_CHAR     { "data" }
+    "SCALETYP"    CDF_CHAR     { "log" }
+    "VAR_NOTES"   CDF_CHAR     { "This instrument doesn't have a " -
+                                 "dedicated background channel. An " -
+                                 "estimate is arrived at by running the " -
+                                 "AFRL technique forward and backward in" -
+                                 " time and choosing the largest of " -
+                                 "these two estimates for each second " -
+                                 "and energy channel." } .
+
+  ! RV values were not requested.
+
+
+! Variable          Data      Number                 Record   Dimension
+! Name              Type     Elements  Dims  Sizes  Variance  Variances
+! --------          ----     --------  ----  -----  --------  ---------
+
+  "ELE_GEOMETRIC"
+                  CDF_DOUBLE     1       1     19       F         T
+
+  ! VAR_COMPRESSION: None
+  ! (Valid compression: None, GZIP.1-9, RLE.0, HUFF.0, AHUFF.0)
+  ! VAR_SPARSERECORDS: None
+  ! (Valid sparserecords: None, sRecords.PAD, sRecords.PREV)
+  ! VAR_PADVALUE: -1.0e+30
+
+  ! Attribute       Data
+  ! Name            Type       Value
+  ! --------        ----       -----
+
+    "CATDESC"     CDF_CHAR     { "--> Electron Channel Geometric factors" -
+                                 " (cm2-eV-ster-sec)." }
+    "FIELDNAM"    CDF_CHAR     { "ELE_GEOMETRIC" }
+    "FILLVAL"     CDF_DOUBLE   { nan }
+    "FORMAT"      CDF_CHAR     { "E12.2" }
+    "LABLAXIS"    CDF_CHAR     { "Ele_Geometric_Factors" }
+    "UNITS"       CDF_CHAR     { "cm2-eV-ster-sec" }
+    "VALIDMIN"    CDF_DOUBLE   { 0.00e+00 }
+    "VALIDMAX"    CDF_DOUBLE   { 1.00e+01 }
+    "VAR_TYPE"    CDF_CHAR     { "support_data" }
+    "SCALETYP"    CDF_CHAR     { "linear" } .
+
+  ! NRV values follow...
+
+    [1] = 1.08e-01
+    [2] = 8.67e-02
+    [3] = 6.76e-02
+    [4] = 5.15e-02
+    [5] = 3.84e-02
+    [6] = 2.83e-02
+    [7] = 2.06e-02
+    [8] = 1.46e-02
+    [9] = 1.03e-02
+    [10] = 7.30e-03
+    [11] = 5.18e-03
+    [12] = 3.53e-03
+    [13] = 2.36e-03
+    [14] = 1.57e-03
+    [15] = 1.01e-03
+    [16] = 6.00e-04
+    [17] = 3.52e-04
+    [18] = 1.82e-04
+    [19] = 8.42e-05
+
+
+! Variable          Data      Number                 Record   Dimension
+! Name              Type     Elements  Dims  Sizes  Variance  Variances
+! --------          ----     --------  ----  -----  --------  ---------
+
+  "ELE_DIFF_ENERGY_FLUX"
+                  CDF_FLOAT      1       1     19       T         T
+
+  ! VAR_COMPRESSION: GZIP.6
+  ! (Valid compression: None, GZIP.1-9, RLE.0, HUFF.0, AHUFF.0)
+  ! VAR_SPARSERECORDS: None
+  ! (Valid sparserecords: None, sRecords.PAD, sRecords.PREV)
+  ! VAR_BLOCKINGFACTOR: 432
+  ! VAR_PADVALUE: -1.0e+30
+
+  ! Attribute       Data
+  ! Name            Type       Value
+  ! --------        ----       -----
+
+    "CATDESC"     CDF_CHAR     { "--> Electron differential energy flux " -
+                                 "(eV/cm2/delta-eV/ster/s)." }
+    "DEPEND_0"    CDF_CHAR     { "Epoch" }
+    "DEPEND_1"    CDF_CHAR     { "CHANNEL_ENERGIES" }
+    "DISPLAY_TYPE"
+                  CDF_CHAR     { "spectrogram" }
+    "FIELDNAM"    CDF_CHAR     { "ELE_DIFF_ENERGY_FLUX" }
+    "FILLVAL"     CDF_FLOAT    { nan }
+    "FORMAT"      CDF_CHAR     { "E12.2" }
+    "LABLAXIS"    CDF_CHAR     { "Ele_Diff_E-Flux" }
+    "UNITS"       CDF_CHAR     { "eV/cm2/delta-eV/ster/s" }
+    "VALIDMIN"    CDF_FLOAT    { -1.0e+30 }
+    "VALIDMAX"    CDF_FLOAT    { 1.0e+30 }
+    "VAR_TYPE"    CDF_CHAR     { "data" }
+    "SCALETYP"    CDF_CHAR     { "log" }
+    "DELTA_PLUS_VAR"
+                  CDF_CHAR     { "ELE_DIFF_ENERGY_FLUX_STD" }
+    "DELTA_MINUS_VAR"
+                  CDF_CHAR     { "ELE_DIFF_ENERGY_FLUX_STD" } .
+
+  ! RV values were not requested.
+
+
+! Variable          Data      Number                 Record   Dimension
+! Name              Type     Elements  Dims  Sizes  Variance  Variances
+! --------          ----     --------  ----  -----  --------  ---------
+
+  "ELE_DIFF_ENERGY_FLUX_STD"
+                  CDF_FLOAT      1       1     19       T         T
+
+  ! VAR_COMPRESSION: GZIP.6
+  ! (Valid compression: None, GZIP.1-9, RLE.0, HUFF.0, AHUFF.0)
+  ! VAR_SPARSERECORDS: None
+  ! (Valid sparserecords: None, sRecords.PAD, sRecords.PREV)
+  ! VAR_BLOCKINGFACTOR: 432
+  ! VAR_PADVALUE: -1.0e+30
+
+  ! Attribute       Data
+  ! Name            Type       Value
+  ! --------        ----       -----
+
+    "CATDESC"     CDF_CHAR     { "-----> Estimated uncertainty in " -
+                                 "electron differential energy flux " -
+                                 "(fractional)." }
+    "DEPEND_0"    CDF_CHAR     { "Epoch" }
+    "DEPEND_1"    CDF_CHAR     { "CHANNEL_ENERGIES" }
+    "DISPLAY_TYPE"
+                  CDF_CHAR     { "spectrogram" }
+    "FIELDNAM"    CDF_CHAR     { "ELE_DIFF_ENERGY_FLUX_STD" }
+    "FILLVAL"     CDF_FLOAT    { nan }
+    "FORMAT"      CDF_CHAR     { "E12.2" }
+    "LABLAXIS"    CDF_CHAR     { "STD_Ele_Diff_E-Flux" }
+    "UNITS"       CDF_CHAR     { "(fractional)" }
+    "VALIDMIN"    CDF_FLOAT    { -1.0e+30 }
+    "VALIDMAX"    CDF_FLOAT    { 1.0e+30 }
+    "VAR_TYPE"    CDF_CHAR     { "data" }
+    "SCALETYP"    CDF_CHAR     { "log" } .
+
+  ! RV values were not requested.
+
+
+! Variable          Data      Number                 Record   Dimension
+! Name              Type     Elements  Dims  Sizes  Variance  Variances
+! --------          ----     --------  ----  -----  --------  ---------
+
+  "ELE_TOTAL_ENERGY_FLUX"
+                  CDF_FLOAT      1       0              T
+
+  ! VAR_COMPRESSION: GZIP.6
+  ! (Valid compression: None, GZIP.1-9, RLE.0, HUFF.0, AHUFF.0)
+  ! VAR_SPARSERECORDS: None
+  ! (Valid sparserecords: None, sRecords.PAD, sRecords.PREV)
+  ! VAR_BLOCKINGFACTOR: 8192
+  ! VAR_PADVALUE: -1.0e+30
+
+  ! Attribute       Data
+  ! Name            Type       Value
+  ! --------        ----       -----
+
+    "CATDESC"     CDF_CHAR     { "--> Electron total energy flux " -
+                                 "integrated over energy " -
+                                 "(eV/cm2/ster/s)." }
+    "DEPEND_0"    CDF_CHAR     { "Epoch" }
+    "DISPLAY_TYPE"
+                  CDF_CHAR     { "time_series" }
+    "FIELDNAM"    CDF_CHAR     { "ELE_TOTAL_ENERGY_FLUX" }
+    "FILLVAL"     CDF_FLOAT    { nan }
+    "FORMAT"      CDF_CHAR     { "E12.2" }
+    "LABLAXIS"    CDF_CHAR     { "Ele_Total_E-Flux" }
+    "UNITS"       CDF_CHAR     { "eV/cm2/ster/s" }
+    "VALIDMIN"    CDF_FLOAT    { -1.0e+30 }
+    "VALIDMAX"    CDF_FLOAT    { 1.0e+30 }
+    "VAR_TYPE"    CDF_CHAR     { "data" }
+    "SCALETYP"    CDF_CHAR     { "log" }
+    "VAR_NOTES"   CDF_CHAR     { " DELTA_PLUS_VAR CDF_CHAR " -
+                                 "ELE_TOTAL_ENERGY_FLUX_STD " -
+                                 "DELTA_MINUS_VAR CDF_CHAR " -
+                                 "ELE_TOTAL_ENERGY_FLUX_STD " } .
+
+  ! RV values were not requested.
+
+
+! Variable          Data      Number                 Record   Dimension
+! Name              Type     Elements  Dims  Sizes  Variance  Variances
+! --------          ----     --------  ----  -----  --------  ---------
+
+  "ELE_TOTAL_ENERGY_FLUX_NOE"
+                  CDF_FLOAT      1       0              T
+
+  ! VAR_COMPRESSION: GZIP.6
+  ! (Valid compression: None, GZIP.1-9, RLE.0, HUFF.0, AHUFF.0)
+  ! VAR_SPARSERECORDS: None
+  ! (Valid sparserecords: None, sRecords.PAD, sRecords.PREV)
+  ! VAR_BLOCKINGFACTOR: 8192
+  ! VAR_PADVALUE: -1.0e+30
+
+  ! Attribute       Data
+  ! Name            Type       Value
+  ! --------        ----       -----
+
+    "CATDESC"     CDF_CHAR     { "-----> Electron total energy flux " -
+                                 "integrated over energy (eV/cm2/ster/s)" -
+                                 " (w/o error bars)." }
+    "DEPEND_0"    CDF_CHAR     { "Epoch" }
+    "DISPLAY_TYPE"
+                  CDF_CHAR     { "time_series" }
+    "FIELDNAM"    CDF_CHAR     { "ELE_TOTAL_ENERGY_FLUX" }
+    "FILLVAL"     CDF_FLOAT    { nan }
+    "FORMAT"      CDF_CHAR     { "E12.2" }
+    "LABLAXIS"    CDF_CHAR     { "Ele_Total_E-Flux" }
+    "UNITS"       CDF_CHAR     { "eV/cm2/ster/s" }
+    "VALIDMIN"    CDF_FLOAT    { -1.0e+30 }
+    "VALIDMAX"    CDF_FLOAT    { 1.0e+30 }
+    "VAR_TYPE"    CDF_CHAR     { "support_data" }
+    "SCALETYP"    CDF_CHAR     { "log" }
+    "VIRTUAL"     CDF_CHAR     { "TRUE" }
+    "FUNCT"       CDF_CHAR     { "alternate_view" }
+    "COMPONENT_0"
+                  CDF_CHAR     { "ELE_TOTAL_ENERGY_FLUX" } .
+
+  ! RV values were not requested.
+
+
+! Variable          Data      Number                 Record   Dimension
+! Name              Type     Elements  Dims  Sizes  Variance  Variances
+! --------          ----     --------  ----  -----  --------  ---------
+
+  "ELE_TOTAL_ENERGY_FLUX_STD"
+                  CDF_FLOAT      1       0              T
+
+  ! VAR_COMPRESSION: GZIP.6
+  ! (Valid compression: None, GZIP.1-9, RLE.0, HUFF.0, AHUFF.0)
+  ! VAR_SPARSERECORDS: None
+  ! (Valid sparserecords: None, sRecords.PAD, sRecords.PREV)
+  ! VAR_BLOCKINGFACTOR: 8192
+  ! VAR_PADVALUE: -1.0e+30
+
+  ! Attribute       Data
+  ! Name            Type       Value
+  ! --------        ----       -----
+
+    "CATDESC"     CDF_CHAR     { "-----> Estimated uncertainty in " -
+                                 "electron total energy flux integrated " -
+                                 "over energy (fractional)." }
+    "DEPEND_0"    CDF_CHAR     { "Epoch" }
+    "DISPLAY_TYPE"
+                  CDF_CHAR     { "time_series" }
+    "FIELDNAM"    CDF_CHAR     { "ELE_TOTAL_ENERGY_FLUX_STD" }
+    "FILLVAL"     CDF_FLOAT    { nan }
+    "FORMAT"      CDF_CHAR     { "E12.2" }
+    "LABLAXIS"    CDF_CHAR     { "STD_Ele_Total_E-Flux" }
+    "UNITS"       CDF_CHAR     { "(fractional)" }
+    "VALIDMIN"    CDF_FLOAT    { -1.0e+30 }
+    "VALIDMAX"    CDF_FLOAT    { 1.0e+30 }
+    "VAR_TYPE"    CDF_CHAR     { "data" }
+    "SCALETYP"    CDF_CHAR     { "log" } .
+
+  ! RV values were not requested.
+
+
+! Variable          Data      Number                 Record   Dimension
+! Name              Type     Elements  Dims  Sizes  Variance  Variances
+! --------          ----     --------  ----  -----  --------  ---------
+
+  "ELE_AVG_ENERGY"
+                  CDF_FLOAT      1       0              T
+
+  ! VAR_COMPRESSION: GZIP.6
+  ! (Valid compression: None, GZIP.1-9, RLE.0, HUFF.0, AHUFF.0)
+  ! VAR_SPARSERECORDS: None
+  ! (Valid sparserecords: None, sRecords.PAD, sRecords.PREV)
+  ! VAR_BLOCKINGFACTOR: 8192
+  ! VAR_PADVALUE: -1.0e+30
+
+  ! Attribute       Data
+  ! Name            Type       Value
+  ! --------        ----       -----
+
+    "CATDESC"     CDF_CHAR     { "--> Electron average energy (eV)." }
+    "DEPEND_0"    CDF_CHAR     { "Epoch" }
+    "DISPLAY_TYPE"
+                  CDF_CHAR     { "time_series" }
+    "FIELDNAM"    CDF_CHAR     { "ELE_AVG_ENERGY" }
+    "FILLVAL"     CDF_FLOAT    { nan }
+    "FORMAT"      CDF_CHAR     { "E12.2" }
+    "LABLAXIS"    CDF_CHAR     { "Ele_Eavg" }
+    "UNITS"       CDF_CHAR     { "eV" }
+    "VALIDMIN"    CDF_FLOAT    { -1.0e+30 }
+    "VALIDMAX"    CDF_FLOAT    { 1.0e+30 }
+    "VAR_TYPE"    CDF_CHAR     { "data" }
+    "SCALETYP"    CDF_CHAR     { "log" }
+    "VAR_NOTES"   CDF_CHAR     { "Computed as: Total Energy Flux / Total" -
+                                 " Number Flux.  DELTA_PLUS_VAR CDF_CHAR" -
+                                 " ELE_AVG_ENERGY_STD DELTA_MINUS_VAR " -
+                                 "CDF_CHAR ELE_AVG_ENERGY_STD" } .
+
+  ! RV values were not requested.
+
+
+! Variable          Data      Number                 Record   Dimension
+! Name              Type     Elements  Dims  Sizes  Variance  Variances
+! --------          ----     --------  ----  -----  --------  ---------
+
+  "ELE_AVG_ENERGY_NOE"
+                  CDF_FLOAT      1       0              T
+
+  ! VAR_COMPRESSION: GZIP.6
+  ! (Valid compression: None, GZIP.1-9, RLE.0, HUFF.0, AHUFF.0)
+  ! VAR_SPARSERECORDS: None
+  ! (Valid sparserecords: None, sRecords.PAD, sRecords.PREV)
+  ! VAR_BLOCKINGFACTOR: 8192
+  ! VAR_PADVALUE: -1.0e+30
+
+  ! Attribute       Data
+  ! Name            Type       Value
+  ! --------        ----       -----
+
+    "CATDESC"     CDF_CHAR     { "-----> Electron average energy (eV) " -
+                                 "(w/o error bars)." }
+    "DEPEND_0"    CDF_CHAR     { "Epoch" }
+    "DISPLAY_TYPE"
+                  CDF_CHAR     { "time_series" }
+    "FIELDNAM"    CDF_CHAR     { "ELE_AVG_ENERGY" }
+    "FILLVAL"     CDF_FLOAT    { nan }
+    "FORMAT"      CDF_CHAR     { "E12.2" }
+    "LABLAXIS"    CDF_CHAR     { "Ele_Eavg" }
+    "UNITS"       CDF_CHAR     { "eV" }
+    "VALIDMIN"    CDF_FLOAT    { -1.0e+30 }
+    "VALIDMAX"    CDF_FLOAT    { 1.0e+30 }
+    "VAR_TYPE"    CDF_CHAR     { "support_data" }
+    "SCALETYP"    CDF_CHAR     { "log" }
+    "VAR_NOTES"   CDF_CHAR     { "Computed as: Total Energy Flux / Total" -
+                                 " Number Flux" }
+    "VIRTUAL"     CDF_CHAR     { "TRUE" }
+    "FUNCT"       CDF_CHAR     { "alternate_view" }
+    "COMPONENT_0"
+                  CDF_CHAR     { "ELE_AVG_ENERGY" } .
+
+  ! RV values were not requested.
+
+
+! Variable          Data      Number                 Record   Dimension
+! Name              Type     Elements  Dims  Sizes  Variance  Variances
+! --------          ----     --------  ----  -----  --------  ---------
+
+  "ELE_AVG_ENERGY_STD"
+                  CDF_FLOAT      1       0              T
+
+  ! VAR_COMPRESSION: GZIP.6
+  ! (Valid compression: None, GZIP.1-9, RLE.0, HUFF.0, AHUFF.0)
+  ! VAR_SPARSERECORDS: None
+  ! (Valid sparserecords: None, sRecords.PAD, sRecords.PREV)
+  ! VAR_BLOCKINGFACTOR: 8192
+  ! VAR_PADVALUE: -1.0e+30
+
+  ! Attribute       Data
+  ! Name            Type       Value
+  ! --------        ----       -----
+
+    "CATDESC"     CDF_CHAR     { "-----> Estimated uncertainty in " -
+                                 "electron average energy (fractional)." }
+    "DEPEND_0"    CDF_CHAR     { "Epoch" }
+    "DISPLAY_TYPE"
+                  CDF_CHAR     { "time_series" }
+    "FIELDNAM"    CDF_CHAR     { "ELE_AVG_ENERGY_STD" }
+    "FILLVAL"     CDF_FLOAT    { nan }
+    "FORMAT"      CDF_CHAR     { "E12.2" }
+    "LABLAXIS"    CDF_CHAR     { "STD_Ele_Eavg" }
+    "UNITS"       CDF_CHAR     { "(fractional)" }
+    "VALIDMIN"    CDF_FLOAT    { -1.0e+30 }
+    "VALIDMAX"    CDF_FLOAT    { 1.0e+30 }
+    "VAR_TYPE"    CDF_CHAR     { "data" }
+    "SCALETYP"    CDF_CHAR     { "log" } .
+
+  ! RV values were not requested.
+
+
+! Variable          Data      Number                 Record   Dimension
+! Name              Type     Elements  Dims  Sizes  Variance  Variances
+! --------          ----     --------  ----  -----  --------  ---------
+
+  "ION_COUNTS_OBS"
+                  CDF_FLOAT      1       1     19       T         T
+
+  ! VAR_COMPRESSION: GZIP.6
+  ! (Valid compression: None, GZIP.1-9, RLE.0, HUFF.0, AHUFF.0)
+  ! VAR_SPARSERECORDS: None
+  ! (Valid sparserecords: None, sRecords.PAD, sRecords.PREV)
+  ! VAR_BLOCKINGFACTOR: 432
+  ! VAR_PADVALUE: -1.0e+30
+
+  ! Attribute       Data
+  ! Name            Type       Value
+  ! --------        ----       -----
+
+    "CATDESC"     CDF_CHAR     { "Ions 30eV-30keV:  Ion counts as " -
+                                 "observed; no corrections." }
+    "DEPEND_0"    CDF_CHAR     { "Epoch" }
+    "DEPEND_1"    CDF_CHAR     { "CHANNEL_ENERGIES" }
+    "DISPLAY_TYPE"
+                  CDF_CHAR     { "spectrogram" }
+    "FIELDNAM"    CDF_CHAR     { "ION_COUNTS_OBS" }
+    "FILLVAL"     CDF_FLOAT    { nan }
+    "FORMAT"      CDF_CHAR     { "E12.2" }
+    "LABLAXIS"    CDF_CHAR     { "Ion_Counts" }
+    "UNITS"       CDF_CHAR     { " " }
+    "VALIDMIN"    CDF_FLOAT    { 0.00e+00 }
+    "VALIDMAX"    CDF_FLOAT    { 2.06e+06 }
+    "VAR_TYPE"    CDF_CHAR     { "data" }
+    "SCALETYP"    CDF_CHAR     { "log" } .
+
+  ! RV values were not requested.
+
+
+! Variable          Data      Number                 Record   Dimension
+! Name              Type     Elements  Dims  Sizes  Variance  Variances
+! --------          ----     --------  ----  -----  --------  ---------
+
+  "ION_COUNTS_BKG"
+                  CDF_FLOAT      1       1     19       T         T
+
+  ! VAR_COMPRESSION: GZIP.6
+  ! (Valid compression: None, GZIP.1-9, RLE.0, HUFF.0, AHUFF.0)
+  ! VAR_SPARSERECORDS: None
+  ! (Valid sparserecords: None, sRecords.PAD, sRecords.PREV)
+  ! VAR_BLOCKINGFACTOR: 432
+  ! VAR_PADVALUE: -1.0e+30
+
+  ! Attribute       Data
+  ! Name            Type       Value
+  ! --------        ----       -----
+
+    "CATDESC"     CDF_CHAR     { "-----> Background ion count estimate." }
+    "DEPEND_0"    CDF_CHAR     { "Epoch" }
+    "DEPEND_1"    CDF_CHAR     { "CHANNEL_ENERGIES" }
+    "DISPLAY_TYPE"
+                  CDF_CHAR     { "spectrogram" }
+    "FIELDNAM"    CDF_CHAR     { "ION_COUNTS_BKG" }
+    "FILLVAL"     CDF_FLOAT    { nan }
+    "FORMAT"      CDF_CHAR     { "E12.2" }
+    "LABLAXIS"    CDF_CHAR     { "Ion_Backgrnd_Counts" }
+    "UNITS"       CDF_CHAR     { " " }
+    "VALIDMIN"    CDF_FLOAT    { -2.06e+06 }
+    "VALIDMAX"    CDF_FLOAT    { 2.06e+06 }
+    "VAR_TYPE"    CDF_CHAR     { "data" }
+    "SCALETYP"    CDF_CHAR     { "log" }
+    "VAR_NOTES"   CDF_CHAR     { "This instrument doesn't have a " -
+                                 "dedicated background channel. An " -
+                                 "estimate is arrived at by running the " -
+                                 "AFRL technique forward and backward in" -
+                                 " time and choosing the largest of " -
+                                 "these two estimates for each second " -
+                                 "and energy channel." } .
+
+  ! RV values were not requested.
+
+
+! Variable          Data      Number                 Record   Dimension
+! Name              Type     Elements  Dims  Sizes  Variance  Variances
+! --------          ----     --------  ----  -----  --------  ---------
+
+  "ION_GEOMETRIC"
+                  CDF_DOUBLE     1       1     19       F         T
+
+  ! VAR_COMPRESSION: None
+  ! (Valid compression: None, GZIP.1-9, RLE.0, HUFF.0, AHUFF.0)
+  ! VAR_SPARSERECORDS: None
+  ! (Valid sparserecords: None, sRecords.PAD, sRecords.PREV)
+  ! VAR_PADVALUE: -1.0e+30
+
+  ! Attribute       Data
+  ! Name            Type       Value
+  ! --------        ----       -----
+
+    "CATDESC"     CDF_CHAR     { "-----> Ion Channel Geometric factors " -
+                                 "(cm2-eV-ster-sec)." }
+    "FIELDNAM"    CDF_CHAR     { "ION_GEOMETRIC" }
+    "FILLVAL"     CDF_DOUBLE   { nan }
+    "FORMAT"      CDF_CHAR     { "E12.2" }
+    "LABLAXIS"    CDF_CHAR     { "Ion_Geometric_Factors" }
+    "UNITS"       CDF_CHAR     { "cm2-eV-ster-sec" }
+    "VALIDMIN"    CDF_DOUBLE   { 0.00e+00 }
+    "VALIDMAX"    CDF_DOUBLE   { 1.00e+01 }
+    "VAR_TYPE"    CDF_CHAR     { "support_data" }
+    "SCALETYP"    CDF_CHAR     { "linear" } .
+
+  ! NRV values follow...
+
+    [1] = 1.05e+00
+    [2] = 6.49e-01
+    [3] = 4.01e-01
+    [4] = 2.45e-01
+    [5] = 1.51e-01
+    [6] = 9.35e-02
+    [7] = 5.81e-02
+    [8] = 3.57e-02
+    [9] = 2.19e-02
+    [10] = 1.40e-02
+    [11] = 8.89e-03
+    [12] = 5.51e-03
+    [13] = 3.60e-03
+    [14] = 2.41e-03
+    [15] = 1.55e-03
+    [16] = 9.89e-04
+    [17] = 6.38e-04
+    [18] = 2.85e-04
+    [19] = 1.41e-04
+
+
+! Variable          Data      Number                 Record   Dimension
+! Name              Type     Elements  Dims  Sizes  Variance  Variances
+! --------          ----     --------  ----  -----  --------  ---------
+
+  "ION_DIFF_ENERGY_FLUX"
+                  CDF_FLOAT      1       1     19       T         T
+
+  ! VAR_COMPRESSION: GZIP.6
+  ! (Valid compression: None, GZIP.1-9, RLE.0, HUFF.0, AHUFF.0)
+  ! VAR_SPARSERECORDS: None
+  ! (Valid sparserecords: None, sRecords.PAD, sRecords.PREV)
+  ! VAR_BLOCKINGFACTOR: 432
+  ! VAR_PADVALUE: -1.0e+30
+
+  ! Attribute       Data
+  ! Name            Type       Value
+  ! --------        ----       -----
+
+    "CATDESC"     CDF_CHAR     { "--> Ion differential energy flux " -
+                                 "(eV/cm2/delta-eV/ster/s)." }
+    "DEPEND_0"    CDF_CHAR     { "Epoch" }
+    "DEPEND_1"    CDF_CHAR     { "CHANNEL_ENERGIES" }
+    "DISPLAY_TYPE"
+                  CDF_CHAR     { "spectrogram" }
+    "FIELDNAM"    CDF_CHAR     { "ION_DIFF_ENERGY_FLUX" }
+    "FILLVAL"     CDF_FLOAT    { nan }
+    "FORMAT"      CDF_CHAR     { "E12.2" }
+    "LABLAXIS"    CDF_CHAR     { "Ion_Diff_E-Flux" }
+    "UNITS"       CDF_CHAR     { "eV/cm2/delta-eV/ster/s" }
+    "VALIDMIN"    CDF_FLOAT    { -1.0e+30 }
+    "VALIDMAX"    CDF_FLOAT    { 1.0e+30 }
+    "VAR_TYPE"    CDF_CHAR     { "data" }
+    "SCALETYP"    CDF_CHAR     { "log" }
+    "DELTA_PLUS_VAR"
+                  CDF_CHAR     { "ION_DIFF_ENERGY_FLUX_STD" }
+    "DELTA_MINUS_VAR"
+                  CDF_CHAR     { "ION_DIFF_ENERGY_FLUX_STD" } .
+
+  ! RV values were not requested.
+
+
+! Variable          Data      Number                 Record   Dimension
+! Name              Type     Elements  Dims  Sizes  Variance  Variances
+! --------          ----     --------  ----  -----  --------  ---------
+
+  "ION_DIFF_ENERGY_FLUX_STD"
+                  CDF_FLOAT      1       1     19       T         T
+
+  ! VAR_COMPRESSION: GZIP.6
+  ! (Valid compression: None, GZIP.1-9, RLE.0, HUFF.0, AHUFF.0)
+  ! VAR_SPARSERECORDS: None
+  ! (Valid sparserecords: None, sRecords.PAD, sRecords.PREV)
+  ! VAR_BLOCKINGFACTOR: 432
+  ! VAR_PADVALUE: -1.0e+30
+
+  ! Attribute       Data
+  ! Name            Type       Value
+  ! --------        ----       -----
+
+    "CATDESC"     CDF_CHAR     { "-----> Estimated uncertainty in ion " -
+                                 "differential energy flux (fractional)." }
+    "DEPEND_0"    CDF_CHAR     { "Epoch" }
+    "DEPEND_1"    CDF_CHAR     { "CHANNEL_ENERGIES" }
+    "DISPLAY_TYPE"
+                  CDF_CHAR     { "spectrogram" }
+    "FIELDNAM"    CDF_CHAR     { "ELE_DIFF_ENERGY_FLUX_STD" }
+    "FILLVAL"     CDF_FLOAT    { nan }
+    "FORMAT"      CDF_CHAR     { "E12.2" }
+    "LABLAXIS"    CDF_CHAR     { "STD_Ion_Diff_E-Flux" }
+    "UNITS"       CDF_CHAR     { "(fractional)" }
+    "VALIDMIN"    CDF_FLOAT    { -1.0e+30 }
+    "VALIDMAX"    CDF_FLOAT    { 1.0e+30 }
+    "VAR_TYPE"    CDF_CHAR     { "data" }
+    "SCALETYP"    CDF_CHAR     { "log" } .
+
+  ! RV values were not requested.
+
+
+! Variable          Data      Number                 Record   Dimension
+! Name              Type     Elements  Dims  Sizes  Variance  Variances
+! --------          ----     --------  ----  -----  --------  ---------
+
+  "ION_TOTAL_ENERGY_FLUX"
+                  CDF_FLOAT      1       0              T
+
+  ! VAR_COMPRESSION: GZIP.6
+  ! (Valid compression: None, GZIP.1-9, RLE.0, HUFF.0, AHUFF.0)
+  ! VAR_SPARSERECORDS: None
+  ! (Valid sparserecords: None, sRecords.PAD, sRecords.PREV)
+  ! VAR_BLOCKINGFACTOR: 8192
+  ! VAR_PADVALUE: -1.0e+30
+
+  ! Attribute       Data
+  ! Name            Type       Value
+  ! --------        ----       -----
+
+    "CATDESC"     CDF_CHAR     { "--> Ion total energy flux integrated " -
+                                 "over energy (eV/cm2/ster/s)." }
+    "DEPEND_0"    CDF_CHAR     { "Epoch" }
+    "DISPLAY_TYPE"
+                  CDF_CHAR     { "time_series" }
+    "FIELDNAM"    CDF_CHAR     { "ION_TOTAL_ENERGY_FLUX" }
+    "FILLVAL"     CDF_FLOAT    { nan }
+    "FORMAT"      CDF_CHAR     { "E12.2" }
+    "LABLAXIS"    CDF_CHAR     { "Ion_Total_E-Flux" }
+    "UNITS"       CDF_CHAR     { "eV/cm2/ster/s" }
+    "VALIDMIN"    CDF_FLOAT    { -1.0e+30 }
+    "VALIDMAX"    CDF_FLOAT    { 1.0e+30 }
+    "VAR_TYPE"    CDF_CHAR     { "data" }
+    "SCALETYP"    CDF_CHAR     { "log" }
+    "VAR_NOTES"   CDF_CHAR     { " DELTA_PLUS_VAR CDF_CHAR " -
+                                 "ION_TOTAL_ENERGY_FLUX_STD " -
+                                 "DELTA_MINUS_VAR CDF_CHAR " -
+                                 "ION_TOTAL_ENERGY_FLUX_STD " } .
+
+  ! RV values were not requested.
+
+
+! Variable          Data      Number                 Record   Dimension
+! Name              Type     Elements  Dims  Sizes  Variance  Variances
+! --------          ----     --------  ----  -----  --------  ---------
+
+  "ION_TOTAL_ENERGY_FLUX_NOE"
+                  CDF_FLOAT      1       0              T
+
+  ! VAR_COMPRESSION: GZIP.6
+  ! (Valid compression: None, GZIP.1-9, RLE.0, HUFF.0, AHUFF.0)
+  ! VAR_SPARSERECORDS: None
+  ! (Valid sparserecords: None, sRecords.PAD, sRecords.PREV)
+  ! VAR_BLOCKINGFACTOR: 8192
+  ! VAR_PADVALUE: -1.0e+30
+
+  ! Attribute       Data
+  ! Name            Type       Value
+  ! --------        ----       -----
+
+    "CATDESC"     CDF_CHAR     { "-----> Ion total energy flux " -
+                                 "integrated over energy (eV/cm2/ster/s)" -
+                                 " (w/o error bars)." }
+    "DEPEND_0"    CDF_CHAR     { "Epoch" }
+    "DISPLAY_TYPE"
+                  CDF_CHAR     { "time_series" }
+    "FIELDNAM"    CDF_CHAR     { "ION_TOTAL_ENERGY_FLUX" }
+    "FILLVAL"     CDF_FLOAT    { nan }
+    "FORMAT"      CDF_CHAR     { "E12.2" }
+    "LABLAXIS"    CDF_CHAR     { "Ion_Total_E-Flux" }
+    "UNITS"       CDF_CHAR     { "eV/cm2/ster/s" }
+    "VALIDMIN"    CDF_FLOAT    { -1.0e+30 }
+    "VALIDMAX"    CDF_FLOAT    { 1.0e+30 }
+    "VAR_TYPE"    CDF_CHAR     { "support_data" }
+    "SCALETYP"    CDF_CHAR     { "log" }
+    "VIRTUAL"     CDF_CHAR     { "TRUE" }
+    "FUNCT"       CDF_CHAR     { "alternate_view" }
+    "COMPONENT_0"
+                  CDF_CHAR     { "ION_TOTAL_ENERGY_FLUX" } .
+
+  ! RV values were not requested.
+
+
+! Variable          Data      Number                 Record   Dimension
+! Name              Type     Elements  Dims  Sizes  Variance  Variances
+! --------          ----     --------  ----  -----  --------  ---------
+
+  "ION_TOTAL_ENERGY_FLUX_STD"
+                  CDF_FLOAT      1       0              T
+
+  ! VAR_COMPRESSION: GZIP.6
+  ! (Valid compression: None, GZIP.1-9, RLE.0, HUFF.0, AHUFF.0)
+  ! VAR_SPARSERECORDS: None
+  ! (Valid sparserecords: None, sRecords.PAD, sRecords.PREV)
+  ! VAR_BLOCKINGFACTOR: 8192
+  ! VAR_PADVALUE: -1.0e+30
+
+  ! Attribute       Data
+  ! Name            Type       Value
+  ! --------        ----       -----
+
+    "CATDESC"     CDF_CHAR     { "-----> Estimated uncertainty in ion " -
+                                 "total energy flux integrated over " -
+                                 "energy (fractional)." }
+    "DEPEND_0"    CDF_CHAR     { "Epoch" }
+    "DISPLAY_TYPE"
+                  CDF_CHAR     { "time_series" }
+    "FIELDNAM"    CDF_CHAR     { "ION_TOTAL_ENERGY_FLUX_STD" }
+    "FILLVAL"     CDF_FLOAT    { nan }
+    "FORMAT"      CDF_CHAR     { "E12.2" }
+    "LABLAXIS"    CDF_CHAR     { "STD_Ion_Total_E-Flux" }
+    "UNITS"       CDF_CHAR     { "(fractional)" }
+    "VALIDMIN"    CDF_FLOAT    { -1.0e+30 }
+    "VALIDMAX"    CDF_FLOAT    { 1.0e+30 }
+    "VAR_TYPE"    CDF_CHAR     { "data" }
+    "SCALETYP"    CDF_CHAR     { "log" } .
+
+  ! RV values were not requested.
+
+
+! Variable          Data      Number                 Record   Dimension
+! Name              Type     Elements  Dims  Sizes  Variance  Variances
+! --------          ----     --------  ----  -----  --------  ---------
+
+  "ION_AVG_ENERGY"
+                  CDF_FLOAT      1       0              T
+
+  ! VAR_COMPRESSION: GZIP.6
+  ! (Valid compression: None, GZIP.1-9, RLE.0, HUFF.0, AHUFF.0)
+  ! VAR_SPARSERECORDS: None
+  ! (Valid sparserecords: None, sRecords.PAD, sRecords.PREV)
+  ! VAR_BLOCKINGFACTOR: 8192
+  ! VAR_PADVALUE: -1.0e+30
+
+  ! Attribute       Data
+  ! Name            Type       Value
+  ! --------        ----       -----
+
+    "CATDESC"     CDF_CHAR     { "--> Ion average energy (eV)." }
+    "DEPEND_0"    CDF_CHAR     { "Epoch" }
+    "DISPLAY_TYPE"
+                  CDF_CHAR     { "time_series" }
+    "FIELDNAM"    CDF_CHAR     { "ION_AVG_ENERGY" }
+    "FILLVAL"     CDF_FLOAT    { nan }
+    "FORMAT"      CDF_CHAR     { "E12.2" }
+    "LABLAXIS"    CDF_CHAR     { "Ion_Eavg" }
+    "UNITS"       CDF_CHAR     { "eV" }
+    "VALIDMIN"    CDF_FLOAT    { -1.0e+30 }
+    "VALIDMAX"    CDF_FLOAT    { 1.0e+30 }
+    "VAR_TYPE"    CDF_CHAR     { "data" }
+    "SCALETYP"    CDF_CHAR     { "log" }
+    "VAR_NOTES"   CDF_CHAR     { "Computed as: Total Energy Flux / Total" -
+                                 " Number Flux. DELTA_PLUS_VAR CDF_CHAR " -
+                                 "ION_AVG_ENERGY_STD DELTA_MINUS_VAR " -
+                                 "CDF_CHAR ION_AVG_ENERGY_STD" } .
+
+  ! RV values were not requested.
+
+
+! Variable          Data      Number                 Record   Dimension
+! Name              Type     Elements  Dims  Sizes  Variance  Variances
+! --------          ----     --------  ----  -----  --------  ---------
+
+  "ION_AVG_ENERGY_NOE"
+                  CDF_FLOAT      1       0              T
+
+  ! VAR_COMPRESSION: GZIP.6
+  ! (Valid compression: None, GZIP.1-9, RLE.0, HUFF.0, AHUFF.0)
+  ! VAR_SPARSERECORDS: None
+  ! (Valid sparserecords: None, sRecords.PAD, sRecords.PREV)
+  ! VAR_BLOCKINGFACTOR: 8192
+  ! VAR_PADVALUE: -1.0e+30
+
+  ! Attribute       Data
+  ! Name            Type       Value
+  ! --------        ----       -----
+
+    "CATDESC"     CDF_CHAR     { "-----> Ion average energy (eV) (w/o " -
+                                 "error bars)." }
+    "DEPEND_0"    CDF_CHAR     { "Epoch" }
+    "DISPLAY_TYPE"
+                  CDF_CHAR     { "time_series" }
+    "FIELDNAM"    CDF_CHAR     { "ION_AVG_ENERGY" }
+    "FILLVAL"     CDF_FLOAT    { nan }
+    "FORMAT"      CDF_CHAR     { "E12.2" }
+    "LABLAXIS"    CDF_CHAR     { "Ion_Eavg" }
+    "UNITS"       CDF_CHAR     { "eV" }
+    "VALIDMIN"    CDF_FLOAT    { -1.0e+30 }
+    "VALIDMAX"    CDF_FLOAT    { 1.0e+30 }
+    "VAR_TYPE"    CDF_CHAR     { "support_data" }
+    "SCALETYP"    CDF_CHAR     { "log" }
+    "VAR_NOTES"   CDF_CHAR     { "Computed as: Total Energy Flux / Total" -
+                                 " Number Flux" }
+    "VIRTUAL"     CDF_CHAR     { "TRUE" }
+    "FUNCT"       CDF_CHAR     { "alternate_view" }
+    "COMPONENT_0"
+                  CDF_CHAR     { "ION_AVG_ENERGY" } .
+
+  ! RV values were not requested.
+
+
+! Variable          Data      Number                 Record   Dimension
+! Name              Type     Elements  Dims  Sizes  Variance  Variances
+! --------          ----     --------  ----  -----  --------  ---------
+
+  "ION_AVG_ENERGY_STD"
+                  CDF_FLOAT      1       0              T
+
+  ! VAR_COMPRESSION: GZIP.6
+  ! (Valid compression: None, GZIP.1-9, RLE.0, HUFF.0, AHUFF.0)
+  ! VAR_SPARSERECORDS: None
+  ! (Valid sparserecords: None, sRecords.PAD, sRecords.PREV)
+  ! VAR_BLOCKINGFACTOR: 8192
+  ! VAR_PADVALUE: -1.0e+30
+
+  ! Attribute       Data
+  ! Name            Type       Value
+  ! --------        ----       -----
+
+    "CATDESC"     CDF_CHAR     { "-----> Estimated uncertainty in ion " -
+                                 "average energy (fractional)." }
+    "DEPEND_0"    CDF_CHAR     { "Epoch" }
+    "DISPLAY_TYPE"
+                  CDF_CHAR     { "time_series" }
+    "FIELDNAM"    CDF_CHAR     { "ION_AVG_ENERGY_STD" }
+    "FILLVAL"     CDF_FLOAT    { nan }
+    "FORMAT"      CDF_CHAR     { "E12.2" }
+    "LABLAXIS"    CDF_CHAR     { "STD_Ion_Eavg" }
+    "UNITS"       CDF_CHAR     { "(fractional)" }
+    "VALIDMIN"    CDF_FLOAT    { -1.0e+30 }
+    "VALIDMAX"    CDF_FLOAT    { 1.0e+30 }
+    "VAR_TYPE"    CDF_CHAR     { "data" }
+    "SCALETYP"    CDF_CHAR     { "log" } .
+
+  ! RV values were not requested.
+
+
+! Variable          Data      Number                 Record   Dimension
+! Name              Type     Elements  Dims  Sizes  Variance  Variances
+! --------          ----     --------  ----  -----  --------  ---------
+
+  "SC_ECI"        CDF_DOUBLE     1       1     3        T         T
+
+  ! VAR_COMPRESSION: GZIP.6
+  ! (Valid compression: None, GZIP.1-9, RLE.0, HUFF.0, AHUFF.0)
+  ! VAR_SPARSERECORDS: None
+  ! (Valid sparserecords: None, sRecords.PAD, sRecords.PREV)
+  ! VAR_BLOCKINGFACTOR: 1366
+  ! VAR_PADVALUE: -1.0e+30
+
+  ! Attribute       Data
+  ! Name            Type       Value
+  ! --------        ----       -----
+
+    "CATDESC"     CDF_CHAR     { "Earth Centered Inertial (ECI) " -
+                                 "spacecraft location (x,y,z) in km." }
+    "DEPEND_0"    CDF_CHAR     { "Epoch" }
+    "DISPLAY_TYPE"
+                  CDF_CHAR     { "time_series" }
+    "FIELDNAM"    CDF_CHAR     { "SC_ECI" }
+    "FILLVAL"     CDF_DOUBLE   { nan }
+    "FORMAT"      CDF_CHAR     { "E12.2" }
+    "LABLAXIS"    CDF_CHAR     { "SC_ECI" }
+    "LABL_PTR_1"  CDF_CHAR     { "SC_ECI_LABEL" }
+    "UNITS"       CDF_CHAR     { "km" }
+    "VALIDMIN"    CDF_DOUBLE   { -7.50e+03, -7.50e+03, -7.50e+03 }
+    "VALIDMAX"    CDF_DOUBLE   { 7.50e+03, 7.50e+03, 7.50e+03 }
+    "VAR_TYPE"    CDF_CHAR     { "data" }
+    "SCALETYP"    CDF_CHAR     { "linear" }
+    "VAR_NOTES"   CDF_CHAR     { "Epoch is True of Date (TOD). These ECI" -
+                                 " coordinates are calculated from an " -
+                                 "SPDF SSC Locator 1-minute ephemeris " -
+                                 "using an 8 order interpolation " -
+                                 "(Burden, R. L. and Faires, J. D., " -
+                                 "Numerical Analysis, 5th Ed., PWS " -
+                                 "Publishing Company, Boston, 1993). " -
+                                 "Using SPDF methods, expected accuracy " -
+                                 "is on the order of a few km." } .
+
+  ! RV values were not requested.
+
+
+! Variable          Data      Number                 Record   Dimension
+! Name              Type     Elements  Dims  Sizes  Variance  Variances
+! --------          ----     --------  ----  -----  --------  ---------
+
+  "SC_ECI_LABEL"
+                  CDF_CHAR       5       1     3        F         T
+
+  ! VAR_COMPRESSION: None
+  ! (Valid compression: None, GZIP.1-9, RLE.0, HUFF.0, AHUFF.0)
+  ! VAR_SPARSERECORDS: None
+  ! (Valid sparserecords: None, sRecords.PAD, sRecords.PREV)
+  ! VAR_PADVALUE: " "
+
+  ! Attribute       Data
+  ! Name            Type       Value
+  ! --------        ----       -----
+
+    "CATDESC"     CDF_CHAR     { "SC_ECI_LABEL" }
+    "FIELDNAM"    CDF_CHAR     { "SC_ECI_LABEL" }
+    "FORMAT"      CDF_CHAR     { "A5" }
+    "LABLAXIS"    CDF_CHAR     { "SC_ECI_LABEL" }
+    "VAR_TYPE"    CDF_CHAR     { "metadata" } .
+
+  ! NRV values follow...
+
+    [1] = { "x_ECI" }
+    [2] = { "y_ECI" }
+    [3] = { "z_ECI" }
+
+
+! Variable          Data      Number                 Record   Dimension
+! Name              Type     Elements  Dims  Sizes  Variance  Variances
+! --------          ----     --------  ----  -----  --------  ---------
+
+  "SC_GEOCENTRIC_LAT"
+                  CDF_DOUBLE     1       0              T
+
+  ! VAR_COMPRESSION: GZIP.6
+  ! (Valid compression: None, GZIP.1-9, RLE.0, HUFF.0, AHUFF.0)
+  ! VAR_SPARSERECORDS: None
+  ! (Valid sparserecords: None, sRecords.PAD, sRecords.PREV)
+  ! VAR_BLOCKINGFACTOR: 4096
+  ! VAR_PADVALUE: -1.0e+30
+
+  ! Attribute       Data
+  ! Name            Type       Value
+  ! --------        ----       -----
+
+    "CATDESC"     CDF_CHAR     { "--> Geocentric latitude" }
+    "DEPEND_0"    CDF_CHAR     { "Epoch" }
+    "DISPLAY_TYPE"
+                  CDF_CHAR     { "time_series" }
+    "FIELDNAM"    CDF_CHAR     { "SC_GEOCENTRIC_LAT" }
+    "FILLVAL"     CDF_DOUBLE   { nan }
+    "FORMAT"      CDF_CHAR     { "E12.2" }
+    "LABLAXIS"    CDF_CHAR     { "SC_GEOCENTRIC_LAT" }
+    "UNITS"       CDF_CHAR     { "deg" }
+    "VALIDMIN"    CDF_DOUBLE   { -9.00e+01 }
+    "VALIDMAX"    CDF_DOUBLE   { 9.00e+01 }
+    "VAR_TYPE"    CDF_CHAR     { "data" }
+    "SCALETYP"    CDF_CHAR     { "linear" }
+    "VAR_NOTES"   CDF_CHAR     { "Calculated using IDL Astro Library " -
+                                 "function eci2geo()." } .
+
+  ! RV values were not requested.
+
+
+! Variable          Data      Number                 Record   Dimension
+! Name              Type     Elements  Dims  Sizes  Variance  Variances
+! --------          ----     --------  ----  -----  --------  ---------
+
+  "SC_GEOCENTRIC_LON"
+                  CDF_DOUBLE     1       0              T
+
+  ! VAR_COMPRESSION: GZIP.6
+  ! (Valid compression: None, GZIP.1-9, RLE.0, HUFF.0, AHUFF.0)
+  ! VAR_SPARSERECORDS: None
+  ! (Valid sparserecords: None, sRecords.PAD, sRecords.PREV)
+  ! VAR_BLOCKINGFACTOR: 4096
+  ! VAR_PADVALUE: -1.0e+30
+
+  ! Attribute       Data
+  ! Name            Type       Value
+  ! --------        ----       -----
+
+    "CATDESC"     CDF_CHAR     { "--> Geocentric Longitude" }
+    "DEPEND_0"    CDF_CHAR     { "Epoch" }
+    "DISPLAY_TYPE"
+                  CDF_CHAR     { "time_series" }
+    "FIELDNAM"    CDF_CHAR     { "SC_GEOCENTRIC_LON" }
+    "FILLVAL"     CDF_DOUBLE   { nan }
+    "FORMAT"      CDF_CHAR     { "E12.2" }
+    "LABLAXIS"    CDF_CHAR     { "SC_GEOCENTRIC_LON" }
+    "UNITS"       CDF_CHAR     { "deg" }
+    "VALIDMIN"    CDF_DOUBLE   { 0.00e+00 }
+    "VALIDMAX"    CDF_DOUBLE   { 3.60e+02 }
+    "VAR_TYPE"    CDF_CHAR     { "data" }
+    "SCALETYP"    CDF_CHAR     { "linear" }
+    "VAR_NOTES"   CDF_CHAR     { "Calculated using IDL Astro Library " -
+                                 "function eci2geo()." } .
+
+  ! RV values were not requested.
+
+
+! Variable          Data      Number                 Record   Dimension
+! Name              Type     Elements  Dims  Sizes  Variance  Variances
+! --------          ----     --------  ----  -----  --------  ---------
+
+  "SC_GEOCENTRIC_R"
+                  CDF_DOUBLE     1       0              T
+
+  ! VAR_COMPRESSION: GZIP.6
+  ! (Valid compression: None, GZIP.1-9, RLE.0, HUFF.0, AHUFF.0)
+  ! VAR_SPARSERECORDS: None
+  ! (Valid sparserecords: None, sRecords.PAD, sRecords.PREV)
+  ! VAR_BLOCKINGFACTOR: 4096
+  ! VAR_PADVALUE: -1.0e+30
+
+  ! Attribute       Data
+  ! Name            Type       Value
+  ! --------        ----       -----
+
+    "CATDESC"     CDF_CHAR     { "--> Distance from center of Earth in km." }
+    "DEPEND_0"    CDF_CHAR     { "Epoch" }
+    "DISPLAY_TYPE"
+                  CDF_CHAR     { "time_series" }
+    "FIELDNAM"    CDF_CHAR     { "SC_GEOCENTRIC_RADIUS" }
+    "FILLVAL"     CDF_DOUBLE   { nan }
+    "FORMAT"      CDF_CHAR     { "E12.2" }
+    "LABLAXIS"    CDF_CHAR     { "SC_GEOCENTRIC_R" }
+    "UNITS"       CDF_CHAR     { "km" }
+    "VALIDMIN"    CDF_DOUBLE   { 6.38e+03 }
+    "VALIDMAX"    CDF_DOUBLE   { 7.50e+03 }
+    "VAR_TYPE"    CDF_CHAR     { "data" }
+    "SCALETYP"    CDF_CHAR     { "linear" } .
+
+  ! RV values were not requested.
+
+
+! Variable          Data      Number                 Record   Dimension
+! Name              Type     Elements  Dims  Sizes  Variance  Variances
+! --------          ----     --------  ----  -----  --------  ---------
+
+  "SC_AACGM_LAT"
+                  CDF_DOUBLE     1       0              T
+
+  ! VAR_COMPRESSION: GZIP.6
+  ! (Valid compression: None, GZIP.1-9, RLE.0, HUFF.0, AHUFF.0)
+  ! VAR_SPARSERECORDS: None
+  ! (Valid sparserecords: None, sRecords.PAD, sRecords.PREV)
+  ! VAR_BLOCKINGFACTOR: 4096
+  ! VAR_PADVALUE: -1.0e+30
+
+  ! Attribute       Data
+  ! Name            Type       Value
+  ! --------        ----       -----
+
+    "CATDESC"     CDF_CHAR     { "--> Altitude Adjusted Corrected " -
+                                 "Geomagnetic  Latitude" }
+    "DEPEND_0"    CDF_CHAR     { "Epoch" }
+    "DISPLAY_TYPE"
+                  CDF_CHAR     { "time_series" }
+    "FIELDNAM"    CDF_CHAR     { "SC_AACGM_LAT" }
+    "FILLVAL"     CDF_DOUBLE   { nan }
+    "FORMAT"      CDF_CHAR     { "E12.2" }
+    "LABLAXIS"    CDF_CHAR     { "SC_AACGM_LAT" }
+    "UNITS"       CDF_CHAR     { "deg" }
+    "VALIDMIN"    CDF_DOUBLE   { -9.00e+01 }
+    "VALIDMAX"    CDF_DOUBLE   { 9.00e+01 }
+    "VAR_TYPE"    CDF_CHAR     { "data" }
+    "SCALETYP"    CDF_CHAR     { "linear" }
+    "VAR_NOTES"   CDF_CHAR     { "Calculated using SuperDARN AACGM IDL " -
+                                 "library. Values are the result of " -
+                                 "linearly interpolating between 2 " -
+                                 "nearest AACGM 5-year epochs." } .
+
+  ! RV values were not requested.
+
+
+! Variable          Data      Number                 Record   Dimension
+! Name              Type     Elements  Dims  Sizes  Variance  Variances
+! --------          ----     --------  ----  -----  --------  ---------
+
+  "SC_AACGM_LON"
+                  CDF_DOUBLE     1       0              T
+
+  ! VAR_COMPRESSION: GZIP.6
+  ! (Valid compression: None, GZIP.1-9, RLE.0, HUFF.0, AHUFF.0)
+  ! VAR_SPARSERECORDS: None
+  ! (Valid sparserecords: None, sRecords.PAD, sRecords.PREV)
+  ! VAR_BLOCKINGFACTOR: 4096
+  ! VAR_PADVALUE: -1.0e+30
+
+  ! Attribute       Data
+  ! Name            Type       Value
+  ! --------        ----       -----
+
+    "CATDESC"     CDF_CHAR     { "--> Altitude Adjusted Corrected " -
+                                 "Geomagnetic  Longitude" }
+    "DEPEND_0"    CDF_CHAR     { "Epoch" }
+    "DISPLAY_TYPE"
+                  CDF_CHAR     { "time_series" }
+    "FIELDNAM"    CDF_CHAR     { "SC_AACGM_LON" }
+    "FILLVAL"     CDF_DOUBLE   { nan }
+    "FORMAT"      CDF_CHAR     { "E12.2" }
+    "LABLAXIS"    CDF_CHAR     { "SC_AACGM_LON" }
+    "UNITS"       CDF_CHAR     { "deg" }
+    "VALIDMIN"    CDF_DOUBLE   { 0.00e+00 }
+    "VALIDMAX"    CDF_DOUBLE   { 3.60e+02 }
+    "VAR_TYPE"    CDF_CHAR     { "data" }
+    "SCALETYP"    CDF_CHAR     { "linear" }
+    "VAR_NOTES"   CDF_CHAR     { "Calculated using SuperDARN AACGM IDL " -
+                                 "library. Values are the result of " -
+                                 "linearly interpolating between 2 " -
+                                 "nearest AACGM 5-year epochs." } .
+
+  ! RV values were not requested.
+
+
+! Variable          Data      Number                 Record   Dimension
+! Name              Type     Elements  Dims  Sizes  Variance  Variances
+! --------          ----     --------  ----  -----  --------  ---------
+
+  "SC_AACGM_LTIME"
+                  CDF_DOUBLE     1       0              T
+
+  ! VAR_COMPRESSION: GZIP.6
+  ! (Valid compression: None, GZIP.1-9, RLE.0, HUFF.0, AHUFF.0)
+  ! VAR_SPARSERECORDS: None
+  ! (Valid sparserecords: None, sRecords.PAD, sRecords.PREV)
+  ! VAR_BLOCKINGFACTOR: 4096
+  ! VAR_PADVALUE: -1.0e+30
+
+  ! Attribute       Data
+  ! Name            Type       Value
+  ! --------        ----       -----
+
+    "CATDESC"     CDF_CHAR     { "--> Altitude Adjusted Corrected " -
+                                 "Geomagnetic Local Time" }
+    "DEPEND_0"    CDF_CHAR     { "Epoch" }
+    "DISPLAY_TYPE"
+                  CDF_CHAR     { "time_series" }
+    "FIELDNAM"    CDF_CHAR     { "SC_AACGM_LTIME" }
+    "FILLVAL"     CDF_DOUBLE   { nan }
+    "FORMAT"      CDF_CHAR     { "E12.2" }
+    "LABLAXIS"    CDF_CHAR     { "SC_AACGM_LTIME" }
+    "UNITS"       CDF_CHAR     { "hr" }
+    "VALIDMIN"    CDF_DOUBLE   { 0.00e+00 }
+    "VALIDMAX"    CDF_DOUBLE   { 2.40e+01 }
+    "VAR_TYPE"    CDF_CHAR     { "data" }
+    "SCALETYP"    CDF_CHAR     { "linear" }
+    "VAR_NOTES"   CDF_CHAR     { "Calculated using SuperDARN AACGM IDL " -
+                                 "library. Values are the result of " -
+                                 "linearly interpolating between 2 " -
+                                 "nearest AACGM 5-year epochs." } .
+
+  ! RV values were not requested.
+
+
+#end
