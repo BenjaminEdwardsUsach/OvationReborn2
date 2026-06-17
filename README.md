@@ -6,94 +6,105 @@
 
 ## Descripción
 
-OvationReborn2 reproduce el esquema cuantitativo de identificación de límites de precipitación nocturna (b₁ₑ/b₁ᵢ, b₂ₑ, b₂ᵢ, b₃ₐ/b₃ᵦ, b₄ₛ, b₅, b₆) descrito en *Morphology of nightside precipitation*. El proyecto:
+OvationReborn2 procesa datos de precipitación nocturna de la misión DMSP y detecta los límites aurorales operacionales:
+- b₁ₑ / b₁ᵢ
+- b₂ₑ
+- b₂ᵢ
+- b₃ₐ / b₃ᵦ
+- b₄ₛ
+- b₅
+- b₆
 
-- Carga datos CDF de DMSP (32 eV–30 keV, resolución 1 s).  
-- Aplica filtros, limpieza de outliers y cálculo de flujos integrados.  
-- Detecta automáticamente los límites operacionales definidos en Newell et al. (1996) mediante técnicas de promedio móvil y correlación de espectros.  
-- Produce gráficos espectrales (pcolormesh con escala log) y series de flujo integrado con marcas de candidatos b₂ᵢ.  
-- Guarda resultados en JSON y figuras PNG por ciclo.
-
----
-
-## Estructura del Código
-
-Basado en `OvationReborn23.py`:
-
-- **`moving_average`, `detectar_b2i_sliding_vec`**: funciones para promedio móvil y detección de b₂ᵢ con ventana deslizante.  
-- Carga CDF y extracción de variables con filtros `VALIDMIN`/`VALIDMAX`.  
-- Filtrado de canales entre 30 eV y 30 keV, cálculo de `flujos_iones`.  
-- Limpieza de outliers con mediana y MAD.  
-- Segmentación por latitud AACGM, detección de cruces de signo y pares de extremos.  
-- Detección de candidatos en primera y segunda mitad de cada segmento, con umbrales basados en percentiles.  
-- Visualización: figuras 2×2 (espectrograma y flujo integrado), etiquetando UT, latitudes AACGM/GEO en los ticks.  
-- Salida: carpeta principal (nombrada como el CDF), subcarpetas `cycle_<n>` con `info.txt` (JSON serializable) y `cycle.png` :contentReference[oaicite:4]{index=4}:contentReference[oaicite:5]{index=5}.
+El proyecto trabaja con archivos CDF de DMSP y realiza:
+- Carga de datos con validación de rangos y extracción de variables clave.
+- Filtrado de canales entre 30 eV y 30 keV.
+- Cálculo de flujos integrados y transformaciones logarítmicas.
+- Segmentación por latitud AACGM y detección de extremos y candidatos de ciclo.
+- Almacenamiento de resultados por ciclo en `results/`.
+- Visualización mediante una interfaz de Streamlit (`main_app.py`).
 
 ---
 
-## Descarga de Datos Satelitales
+## Componentes principales
 
-Para obtener los archivos CDF desde CDAWeb (usado en el script):
-
-1. Visitar el buscador CDAWeb:  
-   https://cdaweb.gsfc.nasa.gov/index.html  
-2. Seleccionar satélite e instrumento (p. ej., SSJ4 de DMSP).  
-3. Elegir ventana temporal y variable deseada.  
-4. En “Select an activity” elegir **Download CDF** y pulsar **Submit**.  
-5. Descargar el archivo CDF desde el enlace en la nueva página https://cdaweb.gsfc.nasa.gov/index.html.
+- `main_app.py`: interfaz web en Streamlit para procesar archivos CDF y visualizar resultados.
+- `OvationRebron23.py`: script principal de procesamiento en línea de comandos.
+- `funciones/`: paquete con las rutinas de carga, limpieza, filtrado, detección y exportación.
+- `data/`: carpeta sugerida para almacenar archivos CDF de entrada.
+- `results/`: carpeta donde se guarda la salida organizada por ciclo.
 
 ---
 
-## Manual de Usuario
+## Uso
 
-Para instalar y ejecutar el programa;
+### 1. Instalar dependencias
 
-1. Clonamos el repositorio;
-   git clone https://github.com/BenjaminEdwardsUsach/OvationReborn2.git
-   cd OvationReborn2
-2. instalamos dependencias;
-   pip install -r requirements.txt
-3. Ejecutar starter.py con los parámetros deseados, Ej;
-   python starter.py archivo.cdf --fronteras b1e b2e b6 --inicio 2014-12-31T12:00:00 --fin 2014-12-31T12:30:00
-
-   Posteriormente, ingresar la ruta del archivo CDF.
-
-   ruta/al/archivo.cdf: ruta absoluta o relativa al archivo CDF de DMSP.
-   
-   --fronteras: lista de fronteras a detectar (minúsculas). Opciones:
-   b1e, b2e, b2i, b3a, b3b, b4s, b5e, b5i, b6
-   Usa all para todas (valor por defecto).
-
-   --inicio y --fin: intervalo temporal en formato ISO YYYY-MM-DDThh:mm:ss (inclusive).
-
- 4. Notas Importantes
-   - Minúsculas: los nombres de fronteras son sensibles a mayúsculas/minúsculas.
-   
-   - Dependencias internas: no es necesario indicar fronteras dependientes manualmente.
-   
-   - Intervalos sin datos: recibirás una advertencia si no hay registros en el rango, revisa tu tiempo.
-   
-   - Formato de tiempo: cualquier variación en segundos cambia el filtrado de datos.
-   
-   Salida organizada por ciclo
-
+```bash
+pip install -r requirements.txt
 ```
-[CDF_FILENAME]/
-   ├─ cycle_1/
-   │   ├─ info.json      # parámetros y valores de fronteras
-   │   ├─ cycle.png      # gráfico del ciclo
-   │   └─ fluxes.csv     # flujos integrados (si está habilitado)
-   ├─ cycle_2/ …
-   └─ resumen_global.json
+
+### 2. Ejecutar la interfaz Streamlit
+
+```bash
+streamlit run main_app.py
 ```
-   
+
+Desde la aplicación web puedes subir un archivo CDF o seleccionar uno existente en `data/` y procesarlo.
+
+### 3. Ejecutar por línea de comandos
+
+```bash
+python OvationRebron23.py ruta/al/archivo.cdf --fronteras b1e b2e b2i --inicio 2014-12-31T12:00:00 --fin 2014-12-31T12:30:00
+```
+
+Opciones principales:
+- `ruta/al/archivo.cdf`: ruta absoluta o relativa al archivo CDF de DMSP.
+- `--fronteras`: lista de fronteras a calcular. Si se incluye `all`, procesa todas.
+- `--inicio` y `--fin`: intervalo temporal en formato ISO `YYYY-MM-DDThh:mm:ss`.
+
+> Nota: en el código actual, `OvationRebron23.py` procesa todas las fronteras si `--fronteras all` se pasa o si se omite `all`.
+
+---
+
+## Salida de resultados
+
+El procesamiento crea una carpeta bajo `results/` basada en el nombre del archivo CDF y genera subcarpetas por ciclo.
+
+Ejemplo de estructura esperada:
+
+```text
+results/
+  <nombre_del_cdf>_YYYYMMDD_HHMMSS/
+    cycle_0/
+      info.json
+      cycle.png
+    cycle_1/
+      info.json
+      cycle.png
+    ...
+```
+
+Cada ciclo contiene metadatos de detección y gráficos generados durante el análisis.
+
+---
+
 ## Requisitos
 
-- **Python** 3.8+  
-- **Dependencias** (en `requirements.txt`):  
+- **Python** 3.8+
+- Dependencias en `requirements.txt`:
   ```text
-  cdflib
-  numpy
-  scipy
-  pandas
-  matplotlib
+  streamlit>=1.28.0
+  matplotlib>=3.5.0
+  numpy>=1.21.0
+  pandas>=1.3.0
+  cdflib>=0.4.0
+  scipy>=1.7.0
+  ```
+
+---
+
+## Consejos rápidos
+
+- Coloca los archivos CDF en `data/` para usarlos fácilmente desde la app Streamlit.
+- Si deseas procesar el mismo archivo varias veces, revisa `results/` para evitar sobrescribir datos.
+- Usa `streamlit run main_app.py` si quieres una experiencia visual; usa `python OvationRebron23.py ...` para un procesamiento directo.
