@@ -51,6 +51,20 @@ streamlit run main_app.py
 
 Desde la aplicación web puedes subir un archivo CDF o seleccionar uno existente en `data/` y procesarlo.
 
+En **Explorar espectrogramas** puedes analizar un CDF por ciclos/pasadas orbitales, seleccionar un ciclo y revisar sus espectrogramas y candidatas sin ejecutar la detección de fronteras. La búsqueda usa registros entre MLT 12:00 y 24:00 y electrones desde 200 eV; los espectrogramas muestran todos los canales desde 30 eV. Desde Python:
+
+```python
+from ExtensionV.scan import generar_espectrogramas, graficar_ciclo
+
+resultado = generar_espectrogramas("data/archivo_dmsp.cdf")
+ciclo = resultado["ciclos"][0]
+figuras = graficar_ciclo(resultado, ciclo)
+```
+
+`resultado["ciclos"]` y `resultado["candidatos"]` contienen los tramos orbitales y las candidatas. Usa `graficar_ciclo(resultado, ciclo)` para generar las figuras del ciclo seleccionado.
+
+La exploración también genera **candidatas**: busca tramos de 30–90 segundos donde el flujo electrónico integrado desde 200 eV supera una mediana local de hasta cinco minutos por al menos 0,5 décadas (aprox. 3,2 veces) y tres desviaciones robustas. Informa la duración, latitud AACGM, contraste local y energía media característica; indica si esta aumenta hacia el centro del tramo. Estos son criterios iniciales para revisión visual, no una confirmación física ni umbrales universales. Los valores publicados en un ejemplo se muestran como contexto y no se usan como cortes obligatorios.
+
 ### 3. Ejecutar por línea de comandos
 
 ```bash

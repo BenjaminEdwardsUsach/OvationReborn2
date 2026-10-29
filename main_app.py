@@ -37,7 +37,7 @@ st.sidebar.header("🔧 Configuración")
 # selección de modo
 modo = st.sidebar.radio(
     "Modo de operación:",
-    ["Procesar nuevo archivo", "Visualizar resultados existentes"]
+    ["Procesar nuevo archivo", "Explorar espectrogramas", "Visualizar resultados existentes"]
 )
 
 # función para listar archivos CDF
@@ -216,6 +216,129 @@ if modo == "Procesar nuevo archivo":
                                 caption=f"Gráfica: {ciclo_mas_reciente['nombre']}",
                                 use_column_width=True
                             )
+
+# MODO: explorar datos sin detectar fronteras
+elif modo == "Explorar espectrogramas":
+    from ExtensionV.scan import generar_espectrogramas, graficar_ciclo
+
+    st.header("🔎 Exploración visual de datos DMSP")
+    st.write(
+        "Genera espectrogramas y propone candidatas a V invertida, "
+        "sin ejecutar la detección de fronteras."
+    )
+
+    archivos_existentes = listar_archivos_cdf()
+    if archivos_existentes:
+        opcion_archivo = st.radio(
+            "Selecciona archivo para explorar:",
+            ["Usar archivo existente", "Subir nuevo archivo"],
+            key="scan_opcion_archivo",
+        )
+    else:
+        opcion_archivo = "Subir nuevo archivo"
+
+    archivo_a_explorar = None
+    if opcion_archivo == "Subir nuevo archivo":
+        archivo_subido = st.file_uploader(
+            "Subir archivo CDF DMSP",
+            type=["cdf"],
+            help="Archivo CDF de datos DMSP.",
+            key="scan_archivo_subido",
+        )
+        if archivo_subido is not None:
+            os.makedirs("data", exist_ok=True)
+            archivo_a_explorar = os.path.join("data", archivo_subido.name)
+            with open(archivo_a_explorar, "wb") as archivo:
+                archivo.write(archivo_subido.getbuffer())
+    else:
+        archivo_seleccionado = st.selectbox(
+            "Seleccionar archivo CDF:",
+            archivos_existentes,
+            key="scan_archivo_existente",
+        )
+        archivo_a_explorar = os.path.join("data", archivo_seleccionado)
+
+    if archivo_a_explorar:
+        st.info(f"Archivo seleccionado: `{archivo_a_explorar}`")
+        if st.button("📈 Analizar archivo", type="primary"):
+            try:
+                with st.spinner("Analizando el archivo por ciclos orbitales..."):
+                    st.session_state["scan_resultado"] = generar_espectrogramas(
+                        archivo_a_explorar
+                    )
+                    st.session_state["scan_archivo_resultado"] = archivo_a_explorar
+            except Exception as error:
+                st.error(f"No se pudo analizar el archivo: {error}")
+
+        resultado_scan = st.session_state.get("scan_resultado")
+        if (
+            resultado_scan
+            and st.session_state.get("scan_archivo_resultado") == archivo_a_explorar
+        ):
+            st.success(
+                f"Análisis completado: {resultado_scan['puntos_mlt']:,} de "
+                f"{resultado_scan['puntos_totales']:,} registros MLT, "
+                f"{resultado_scan['canales']} canales visibles desde "
+                f"{resultado_scan['energia_minima_grafico_ev']} eV y "
+                f"{len(resultado_scan['ciclos'])} ciclos."
+            )
+            st.caption(
+                "El detector de candidatas usa electrones desde 200 eV; "
+                "el espectrograma conserva los canales desde 30 eV."
+            )
+
+            candidatos_por_ciclo = {}
+            for candidato in resultado_scan["candidatos"]:
+                candidatos_por_ciclo.setdefault(candidato["ciclo"], []).append(candidato)
+            ciclos_con_candidatos = [
+                ciclo
+                for ciclo in resultado_scan["ciclos"]
+                if ciclo["ciclo"] in candidatos_por_ciclo
+            ]
+            st.caption(
+                f"Ciclos con candidatas: {len(ciclos_con_candidatos)} de "
+                f"{len(resultado_scan['ciclos'])}."
+            )
+            if not ciclos_con_candidatos:
+                st.info("No se encontraron candidatas en los ciclos del intervalo seleccionado.")
+            else:
+                opciones_ciclos = [
+                    f"Ciclo {ciclo['ciclo']} · {ciclo['inicio']} — {ciclo['fin']} "
+                    f"· {len(candidatos_por_ciclo[ciclo['ciclo']])} candidata(s)"
+                    for ciclo in ciclos_con_candidatos
+                ]
+                ciclo_idx = st.selectbox(
+                    "Seleccionar ciclo/pasada:",
+                    range(len(ciclos_con_candidatos)),
+                    format_func=lambda index: opciones_ciclos[index],
+                    key="scan_ciclo_seleccionado",
+                )
+                ciclo = ciclos_con_candidatos[ciclo_idx]
+                candidatos = candidatos_por_ciclo[ciclo["ciclo"]]
+                st.subheader(f"Ciclo {ciclo['ciclo']} · candidatas a V invertida")
+                st.caption(
+                    "Candidatas exploratorias de 30–90 s; el sombreado rojo "
+                    "marca el intervalo. Deben confirmarse visualmente."
+                )
+                st.caption(
+                    "Se buscan aumentos de al menos 0,5 décadas (≈3,2×) y "
+                    "3 desviaciones robustas sobre una mediana local de hasta "
+                    "5 minutos. La energía media del centro se informa, pero "
+                    "no es un criterio de descarte."
+                )
+                st.dataframe(candidatos, width="stretch")
+
+                try:
+                    figuras_ciclo = graficar_ciclo(resultado_scan, ciclo)
+                    col_electrones, col_iones = st.columns(2)
+                    with col_electrones:
+                        st.pyplot(figuras_ciclo["electrones"])
+                        plt.close(figuras_ciclo["electrones"])
+                    with col_iones:
+                        st.pyplot(figuras_ciclo["iones"])
+                        plt.close(figuras_ciclo["iones"])
+                except Exception as error:
+                    st.error(f"No se pudieron generar los gráficos del ciclo: {error}")
 
 # MODO: visualizar resultados existentes
 else:

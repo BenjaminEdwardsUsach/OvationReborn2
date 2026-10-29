@@ -27,6 +27,12 @@ def cargar_datos_cdf(cdf_file):
     SC_GEOCENTRIC_LAT     = load_variable(archivo, 'SC_GEOCENTRIC_LAT')
     # Longitud AACGM (coordenadas geomagnéticas) [grados]
     SC_AACGM_LON          = load_variable(archivo, 'SC_AACGM_LON')
+    # Tiempo local magnético AACGM [horas], disponible en algunos productos CDF
+    SC_AACGM_LTIME = (
+        load_variable(archivo, 'SC_AACGM_LTIME')
+        if 'SC_AACGM_LTIME' in archivo.cdf_info().zVariables
+        else None
+    )
 
     return {
         "tiempo_final": tiempo_final,
@@ -39,6 +45,7 @@ def cargar_datos_cdf(cdf_file):
         "SC_AACGM_LAT": SC_AACGM_LAT,  # [grados] - Latitud geomagnética AACGM
         "SC_GEOCENTRIC_LAT": SC_GEOCENTRIC_LAT,  # [grados] - Latitud geocéntrica
         "SC_AACGM_LON": SC_AACGM_LON,  # [grados] - Longitud geomagnética AACGM
+        "SC_AACGM_LTIME": SC_AACGM_LTIME,  # [horas] - Tiempo local magnético AACGM
         "tiempo": tiempo  # [ms] según definición en CDF
     }
     
